@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 const links = [
   ["/lounge", "Lounge"],
   ["/news", "News"],
+  ["/social", "Social"],
   ["/passport", "Passport"],
   ["/crews", "Crews"],
   ["/sessions", "Sessions"],
-  ["/feed", "Feed"],
   ["/events", "Events"],
 ];
 
@@ -37,8 +37,8 @@ export default function Nav() {
       <nav className="mobile-dock" aria-label="Mobile navigation">
         <Link href="/lounge"><span>🛫</span>Home</Link>
         <Link href="/news"><span>📰</span>News</Link>
+        <Link href="/social"><span>💬</span>Social</Link>
         <Link href="/passport"><span>📘</span>Passport</Link>
-        <Link href="/crews"><span>👥</span>Crews</Link>
         <Link href="/sessions"><span>📍</span>LFG</Link>
       </nav>
     </>

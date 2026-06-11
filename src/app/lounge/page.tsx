@@ -154,7 +154,7 @@ export default function LoungePage() {
     {
       eyebrow: "Flight B6-1119",
       title: `${releaseCountdown.days} days`,
-      body: "Live countdown to the gates opening. Claim your passport, find your crew and wait in the lounge.",
+      body: "Claim your passport, find your crew and wait in the lounge before the gates open.",
       href: "/events",
       cta: "View flight board",
     },
@@ -188,13 +188,19 @@ export default function LoungePage() {
       <section className="live-departure-panel card">
         <div className="departure-topline">
           <div>
-            <span className="eyebrow">Live departure board</span>
+            <span className="eyebrow">Departure board</span>
             <h2 className="departure-title">Flight B6-1119 · Destination Leonida</h2>
           </div>
-          <span className="departure-status">19 Nov 2026</span>
         </div>
 
-        <p className="copy departure-copy">Live countdown to GTA 6 launch day. The lounge stays open while passengers claim passports, form crews and plan their first landing in Leonida.</p>
+        <div className="departure-marquee" aria-label="Flights to Leonida boarding soon">
+          <div className="departure-marquee-track">
+            <span>Flights to Leonida boarding soon</span>
+            <span>Flights to Leonida boarding soon</span>
+            <span>Flights to Leonida boarding soon</span>
+            <span>Flights to Leonida boarding soon</span>
+          </div>
+        </div>
 
         <div className="countdown-grid" aria-label="Countdown to GTA 6 release date">
           <div className="countdown-cell"><strong>{releaseCountdown.days}</strong><span>Days</span></div>
