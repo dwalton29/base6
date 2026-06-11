@@ -117,7 +117,7 @@ function profilePath(profile?: ProfileMini | null) {
   return handle ? `/passport?user=${encodeURIComponent(handle)}` : "/passport";
 }
 
-function commentTotal(comments: CommunityComment[]) {
+function commentTotal(comments: CommunityComment[]): number {
   return comments.reduce((total, comment) => total + 1 + commentTotal(comment.replies || []), 0);
 }
 
