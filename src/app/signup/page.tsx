@@ -456,121 +456,160 @@ export default function SignupPage() {
   }
 
   function drawCanvasLabel(context: CanvasRenderingContext2D, label: string, value: string, x: number, y: number, width: number, height: number) {
-    canvasRoundRect(context, x, y, width, height, 18);
-    context.fillStyle = "rgba(255,255,255,.72)";
+    canvasRoundRect(context, x, y, width, height, Math.min(8, height / 2));
+    context.fillStyle = "rgba(255,255,255,.52)";
     context.fill();
-    context.strokeStyle = "rgba(27, 15, 38, .08)";
-    context.lineWidth = 2;
+    context.strokeStyle = "rgba(21, 17, 28, .07)";
+    context.lineWidth = 1;
     context.stroke();
-    context.fillStyle = "rgba(35, 25, 46, .46)";
-    context.font = "700 18px Arial, sans-serif";
-    context.fillText(label.toUpperCase(), x + 20, y + 28);
-    context.fillStyle = "#1b1026";
-    context.font = "900 28px Arial, sans-serif";
-    context.fillText(value, x + 20, y + 64);
+
+    context.fillStyle = "rgba(21,17,28,.48)";
+    context.font = "1000 8px Arial, sans-serif";
+    context.fillText(label.toUpperCase(), x + 7, y + 13);
+
+    context.fillStyle = "#15111c";
+    context.font = "1000 12px Arial, sans-serif";
+    drawCanvasText(context, value, x + 7, y + height - 10, width - 14);
+  }
+
+  function drawCanvasText(context: CanvasRenderingContext2D, value: string, x: number, y: number, maxWidth: number) {
+    if (context.measureText(value).width <= maxWidth) {
+      context.fillText(value, x, y);
+      return;
+    }
+
+    let output = value;
+    while (output.length > 1 && context.measureText(`${output}…`).width > maxWidth) {
+      output = output.slice(0, -1);
+    }
+    context.fillText(`${output}…`, x, y);
   }
 
   async function createBoardingPassShareImage() {
+    const scale = 2.5;
+    const passWidth = 640;
+    const passHeight = 278;
     const canvas = document.createElement("canvas");
-    canvas.width = 1600;
-    canvas.height = 700;
+    canvas.width = Math.round(passWidth * scale);
+    canvas.height = Math.round(passHeight * scale);
     const context = canvas.getContext("2d");
     if (!context) throw new Error("Could not create boarding pass image.");
 
-    const width = canvas.width;
-    const height = canvas.height;
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.scale(scale, scale);
 
-    canvasRoundRect(context, 0, 0, width, height, 48);
+    canvasRoundRect(context, 0, 0, passWidth, passHeight, 22);
     context.clip();
     context.fillStyle = "#fbf8ff";
-    context.fillRect(0, 0, width, height);
+    context.fillRect(0, 0, passWidth, passHeight);
 
     context.strokeStyle = "rgba(126, 68, 171, .08)";
-    context.lineWidth = 2;
-    for (let index = -height; index < width; index += 42) {
+    context.lineWidth = 1;
+    for (let index = -passHeight; index < passWidth; index += 12) {
       context.beginPath();
-      context.moveTo(index, height);
-      context.lineTo(index + height, 0);
+      context.moveTo(index, passHeight);
+      context.lineTo(index + passHeight, 0);
       context.stroke();
     }
 
-    const headerGradient = context.createLinearGradient(0, 0, width, 0);
-    headerGradient.addColorStop(0, "#8726e8");
-    headerGradient.addColorStop(.52, "#c134ea");
-    headerGradient.addColorStop(1, "#f04abd");
+    const headerGradient = context.createLinearGradient(0, 0, passWidth, 0);
+    headerGradient.addColorStop(0, "#7427d9");
+    headerGradient.addColorStop(.48, "#cc48f0");
+    headerGradient.addColorStop(1, "#f35ccf");
     context.fillStyle = headerGradient;
-    context.fillRect(0, 0, width, 150);
+    context.fillRect(0, 0, passWidth, 60);
 
     context.fillStyle = "#ffffff";
-    context.font = "900 54px Arial, sans-serif";
-    context.fillText("BASE6 AIRLINES", 58, 72);
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("PASSENGER TICKET AND PASSPORT CHECK", 60, 104);
-    context.font = "900 54px Arial, sans-serif";
+    context.font = "900 22px Arial, sans-serif";
+    context.textAlign = "left";
+    context.fillText("BASE6 AIRLINES", 18, 29);
+    context.font = "1000 8px Arial, sans-serif";
+    context.fillText("PASSENGER TICKET AND PASSPORT CHECK", 18, 43);
+    context.font = "900 22px Arial, sans-serif";
     context.textAlign = "right";
-    context.fillText("BOARDING PASS", width - 58, 72);
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("LEONIDA FIRST CLASS", width - 60, 104);
+    context.fillText("BOARDING PASS", passWidth - 18, 29);
+    context.font = "1000 8px Arial, sans-serif";
+    context.fillText("LEONIDA FIRST CLASS", passWidth - 18, 43);
     context.textAlign = "left";
 
-    const footerGradient = context.createLinearGradient(0, height - 88, width, height - 88);
-    footerGradient.addColorStop(0, "#8824ed");
-    footerGradient.addColorStop(1, "#f04ac6");
-    context.fillStyle = footerGradient;
-    context.fillRect(0, height - 88, width, 88);
-    context.fillStyle = "#ffffff";
-    context.font = "900 20px Arial, sans-serif";
-    context.textAlign = "center";
-    context.fillText("PLEASE BE AT THE GATE WHEN BOARDING BEGINS", width / 2, height - 36);
-    context.textAlign = "left";
-
-    const barcodeX = 54;
-    const barcodeY = 188;
-    const barcodeHeight = 390;
-    let cursor = barcodeX;
-    for (let index = 0; index < 36; index += 1) {
-      const barWidth = index % 5 === 0 ? 13 : index % 3 === 0 ? 8 : 5;
-      context.fillStyle = index % 2 === 0 ? "#05000b" : "rgba(5,0,11,.25)";
-      context.fillRect(cursor, barcodeY, barWidth, barcodeHeight);
-      cursor += barWidth + 7;
+    const bodyX = 15;
+    const bodyY = 73;
+    const barcodeW = 104;
+    const bodyContentH = 154;
+    context.save();
+    canvasRoundRect(context, bodyX, bodyY, barcodeW, bodyContentH, 8);
+    context.clip();
+    context.fillStyle = "#fbf8ff";
+    context.fillRect(bodyX, bodyY, barcodeW, bodyContentH);
+    let cursor = bodyX;
+    const barSteps = [4, 3, 7, 4, 2, 6, 3, 5, 2, 8, 4, 3, 6, 2, 5, 4, 7, 3, 2, 6, 4, 5, 3, 8];
+    for (const barWidth of barSteps) {
+      context.fillStyle = "#050506";
+      context.fillRect(cursor, bodyY, barWidth, bodyContentH);
+      cursor += barWidth + 3;
     }
+    context.restore();
 
-    context.fillStyle = "rgba(35, 25, 46, .42)";
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("PASSENGER", 340, 205);
-    context.fillStyle = "#1b1026";
-    context.font = "900 48px Arial, sans-serif";
-    context.fillText(boardingPassDetails.passenger, 340, 258);
-    context.fillStyle = "rgba(35, 25, 46, .68)";
-    context.font = "700 20px Arial, sans-serif";
-    context.fillText(`Passport no. ${boardingPassDetails.passportNumber}`, 340, 292);
+    const mainX = 132;
+    const mainW = 368;
+    const stubX = 513;
 
-    drawCanvasLabel(context, "From", boardingPassDetails.from, 340, 338, 245, 110);
-    drawCanvasLabel(context, "To", boardingPassDetails.to, 610, 338, 245, 110);
-    drawCanvasLabel(context, "Terminal", boardingPassDetails.platform, 880, 338, 300, 110);
-    drawCanvasLabel(context, "Flight", boardingPassDetails.flight, 340, 472, 160, 94);
-    drawCanvasLabel(context, "Gate", boardingPassDetails.gate, 520, 472, 140, 94);
-    drawCanvasLabel(context, "Seat", boardingPassDetails.seat, 680, 472, 150, 94);
-    drawCanvasLabel(context, "Class", boardingPassDetails.classType, 850, 472, 185, 94);
+    context.fillStyle = "rgba(21,17,28,.48)";
+    context.font = "1000 8px Arial, sans-serif";
+    context.fillText("PASSENGER", mainX, 82);
+    context.fillStyle = "#15111c";
+    context.font = "1000 20px Arial, sans-serif";
+    drawCanvasText(context, boardingPassDetails.passenger, mainX, 105, mainW);
+    context.fillStyle = "rgba(21,17,28,.68)";
+    context.font = "1000 9px Arial, sans-serif";
+    drawCanvasText(context, `Passport no. ${boardingPassDetails.passportNumber}`, mainX, 121, mainW);
 
-    context.setLineDash([8, 14]);
-    context.strokeStyle = "rgba(50, 29, 60, .24)";
-    context.lineWidth = 3;
+    drawCanvasLabel(context, "From", boardingPassDetails.from, mainX, 129, 118, 51);
+    drawCanvasLabel(context, "To", boardingPassDetails.to, mainX + 125, 129, 118, 51);
+    drawCanvasLabel(context, "Terminal", boardingPassDetails.platform, mainX + 250, 129, 118, 51);
+
+    const fieldY1 = 187;
+    const fieldY2 = 219;
+    const fieldW = 118;
+    const fieldH = 27;
+    drawCanvasLabel(context, "Flight", boardingPassDetails.flight, mainX, fieldY1, fieldW, fieldH);
+    drawCanvasLabel(context, "Gate", boardingPassDetails.gate, mainX + 125, fieldY1, fieldW, fieldH);
+    drawCanvasLabel(context, "Seat", boardingPassDetails.seat, mainX + 250, fieldY1, fieldW, fieldH);
+    drawCanvasLabel(context, "Arrival", boardingPassDetails.arrival, mainX, fieldY2, fieldW, fieldH);
+    drawCanvasLabel(context, "Depart", boardingPassDetails.departure, mainX + 125, fieldY2, fieldW, fieldH);
+    drawCanvasLabel(context, "Class", boardingPassDetails.classType, mainX + 250, fieldY2, fieldW, fieldH);
+
+    context.setLineDash([2, 4]);
+    context.strokeStyle = "rgba(21, 17, 28, .20)";
+    context.lineWidth = 2;
     context.beginPath();
-    context.moveTo(1240, 150);
-    context.lineTo(1240, height - 88);
+    context.moveTo(stubX, 73);
+    context.lineTo(stubX, 227);
     context.stroke();
     context.setLineDash([]);
 
-    context.fillStyle = "#1b1026";
-    context.font = "900 54px Arial, sans-serif";
-    context.fillText("BASE6", 1310, 352);
-    context.fillStyle = "rgba(35, 25, 46, .54)";
-    context.font = "800 20px Arial, sans-serif";
-    context.fillText("BOARDING PASS", 1312, 386);
-    context.font = "900 24px Arial, sans-serif";
-    context.fillText(boardingPassDetails.passportNumber, 1312, 424);
+    context.fillStyle = "#15111c";
+    context.font = "1000 20px Arial, sans-serif";
+    context.textAlign = "center";
+    context.fillText("BASE6", stubX + 56, 147);
+    context.fillStyle = "rgba(21,17,28,.48)";
+    context.font = "1000 8px Arial, sans-serif";
+    context.fillText("BOARDING PASS", stubX + 56, 163);
+    context.fillStyle = "rgba(21,17,28,.68)";
+    context.font = "1000 9px Arial, sans-serif";
+    context.fillText(boardingPassDetails.passportNumber, stubX + 56, 178);
+    context.textAlign = "left";
+
+    const footerGradient = context.createLinearGradient(0, 240, passWidth, 240);
+    footerGradient.addColorStop(0, "#7427d9");
+    footerGradient.addColorStop(1, "#f35ccf");
+    context.fillStyle = footerGradient;
+    context.fillRect(0, 240, passWidth, 38);
+    context.fillStyle = "#ffffff";
+    context.font = "1000 10px Arial, sans-serif";
+    context.textAlign = "center";
+    context.fillText("PLEASE BE AT THE GATE WHEN BOARDING BEGINS", passWidth / 2, 263);
+    context.textAlign = "left";
 
     return await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((blob) => {
