@@ -50,3 +50,7 @@ If you already ran an older schema, run the updated `supabase/schema.sql` again.
 - Admin is not permission-locked yet; treat it as a local/dev stats page.
 - RLS is MVP-friendly and should be tightened before a real public launch.
 - Payments, ads, push notifications, Android/TWA and moderation workflows are not included yet.
+
+
+## Vercel install note
+This build uses the same npm dependency shape as Trader29. In Vercel, leave Install Command as default or set it to `npm install`.
