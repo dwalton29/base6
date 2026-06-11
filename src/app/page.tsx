@@ -14,6 +14,9 @@ export default function CheckInPage() {
           <Link className="button primary checkin-board-button" href="/signup">
             Board Flight
           </Link>
+          <Link className="button checkin-login-button" href="/login">
+            Login
+          </Link>
           <Link className="checkin-text-link" href="/lounge">
             Enter lounge as guest
           </Link>
