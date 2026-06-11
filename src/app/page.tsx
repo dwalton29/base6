@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ShareBoardingPassButton from "@/components/ShareBoardingPassButton";
 
 export default function CheckInPage() {
   return (
@@ -12,19 +11,23 @@ export default function CheckInPage() {
         <p>
           Check in for Leonida, build your passport and keep your place in the lounge before the gates open.
         </p>
-        <div className="checkin-actions">
+
+        <div className="departure-notice" aria-label="Flights to Leonida Now Boarding">
+          <div className="departure-notice-track" aria-hidden="true">
+            <span>Flights to Leonida Now Boarding</span>
+            <span>Flights to Leonida Now Boarding</span>
+            <span>Flights to Leonida Now Boarding</span>
+            <span>Flights to Leonida Now Boarding</span>
+          </div>
+        </div>
+
+        <div className="checkin-actions checkin-primary-stack">
           <Link className="button primary checkin-board-button" href="/signup">
             Board Flight
           </Link>
-          <Link className="button checkin-login-button" href="/login">
+          <Link className="checkin-login-link" href="/login">
             Login
           </Link>
-        </div>
-        <div className="boarding-pass-actions" aria-label="Boarding pass actions">
-          <Link className="button checkin-pass-button" href="/passport">
-            View Boarding Pass
-          </Link>
-          <ShareBoardingPassButton />
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Base6PassportCover, Base6PassportIdentityPage } from "@/components/base6/PassportDesign";
 import { useEffect, useMemo, useState } from "react";
 import { supabase, hasSupabaseEnv } from "@/lib/supabase";
 
@@ -61,6 +62,14 @@ function formatDate(value?: string | null) {
     month: "short",
     year: "numeric",
   }).format(new Date(value));
+}
+
+function getPlatformLabel(platform?: string | null) {
+  if (!platform) return "Player ID";
+  if (platform.includes("PlayStation")) return "PSN";
+  if (platform.includes("Xbox")) return "Gamertag";
+  if (platform.includes("Steam") || platform.includes("PC")) return "Steam";
+  return "Player ID";
 }
 
 export default function PassportPage() {
@@ -139,6 +148,20 @@ export default function PassportPage() {
   const record = profile?.crime_history === "Spent time in San Andreas"
     ? `San Andreas · moved there in ${profile.san_andreas_since_year || 2013}`
     : profile?.crime_history || "Clean record";
+  const issueDate = formatDate(profile?.created_at);
+  const passportIdentityDetails = profile ? {
+    username: profile.username,
+    passportNumber: profile.passport_number,
+    avatarUrl: profile.avatar_url,
+    platform: profile.platform,
+    handleLabel: getPlatformLabel(profile.platform),
+    handle: profile.platform_handle,
+    issued: issueDate,
+    record,
+    business,
+    bio: profile.bio,
+    reputation: profile.reputation_score,
+  } : null;
 
   const stampPages = useMemo(() => {
     const source = stamps.length ? stamps : fallbackStamps;
@@ -188,12 +211,7 @@ export default function PassportPage() {
       {!isLoading && profile && (
         <section className={`passport-book-stage ${hasOpened ? "is-open" : "is-closed"}`}>
           <div className="passport-closed-cover" aria-hidden="true">
-            <div className="passport-closed-cover-inner">
-              <span>BASE6</span>
-              <div className="passport-closed-seal">✦</div>
-              <strong>PASSPORT</strong>
-              <small>{profile.passport_number}</small>
-            </div>
+            <Base6PassportCover passportNumber={profile.passport_number} />
           </div>
 
           <div className={`passport-book ${hasOpened ? "open" : ""}`}>
@@ -206,41 +224,9 @@ export default function PassportPage() {
                 <span className="passport-page-number">{pageIndex + 1}/{totalPages}</span>
               </div>
 
-              {pageIndex === 0 ? (
-                <div className="passport-profile-sheet">
-                  <div className="passport-profile-head">
-                    <div className="passport-photo-frame">
-                      {profile.avatar_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={profile.avatar_url} alt={`${profile.username} passport ID`} />
-                      ) : (
-                        <span>{profile.username.slice(0, 2).toUpperCase()}</span>
-                      )}
-                    </div>
-                    <div className="passport-profile-title">
-                      <span>Passenger</span>
-                      <h1>{profile.username}</h1>
-                      <p>{profile.platform || "Platform pending"}</p>
-                    </div>
-                  </div>
-
-                  <div className="passport-data-grid">
-                    <div><span>Passport no.</span><strong>{profile.passport_number}</strong></div>
-                    <div><span>Handle</span><strong>{profile.platform_handle || "Pending"}</strong></div>
-                    <div><span>Record</span><strong>{record}</strong></div>
-                    <div><span>Business</span><strong>{business}</strong></div>
-                    <div><span>Issued</span><strong>{formatDate(profile.created_at)}</strong></div>
-                    <div><span>Reputation</span><strong>{profile.reputation_score}</strong></div>
-                  </div>
-
-                  <div className="passport-bio-box">
-                    <span>Declaration</span>
-                    <p>{profile.bio || "Nothing declared yet."}</p>
-                  </div>
-
-                  <div className="passport-machine-line">
-                    B6&lt;{profile.username.toUpperCase().replace(/[^A-Z0-9]/g, "") || "PASSENGER"}&lt;&lt;LEONIDA&lt;{profile.passport_number.replace(/[^A-Z0-9]/g, "")}
-                  </div>
+              {pageIndex === 0 && passportIdentityDetails ? (
+                <div className="base6-open-passport-spread passport-directory-spread">
+                  <Base6PassportIdentityPage details={passportIdentityDetails} />
                 </div>
               ) : (
                 <div className="passport-stamp-sheet">

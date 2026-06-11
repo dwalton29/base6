@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Base6BoardingPass } from "@/components/base6/Base6BoardingPass";
 import { Base6PassportCover, Base6PassportIdentityPage } from "@/components/base6/PassportDesign";
 import { supabase, hasSupabaseEnv } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -120,7 +121,6 @@ export default function SignupPage() {
   const [isScanningId, setIsScanningId] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [authError, setAuthError] = useState("");
-  const [shareStatus, setShareStatus] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [form, setForm] = useState<SignupForm>(initialForm);
   const [checkInDate] = useState(() => new Date());
@@ -154,9 +154,7 @@ export default function SignupPage() {
       ? form.crimeHistory.trim().length > 0 && (!declaredSanAndreas || form.sanAndreasYear.trim().length > 0)
       : step.key === "email"
         ? form.email.trim().includes("@") && form.password.length >= 6
-        : step.type === "photo"
-          ? true
-          : value.trim().length > 0;
+        : value.trim().length > 0;
   const progress = useMemo(() => Math.round(((stepIndex + 1) / totalSteps) * 100), [stepIndex, totalSteps]);
 
   const arrivalStamp = useMemo(() => checkInDate.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "2-digit", hour: "2-digit", minute: "2-digit" }).replace(",", "").toUpperCase(), [checkInDate]);
@@ -385,244 +383,34 @@ export default function SignupPage() {
     bio: form.bio || "Nothing declared yet.",
   };
 
-  function BoardingPassCard() {
-    return (
-      <article className="one-boarding-pass" aria-label="BASE6 boarding pass">
-        <div className="one-pass-header">
-          <div>
-            <strong>BASE6 AIRLINES</strong>
-            <span>Passenger ticket and passport check</span>
-          </div>
-          <div>
-            <strong>BOARDING PASS</strong>
-            <span>Leonida first class</span>
-          </div>
-        </div>
-
-        <div className="one-pass-body">
-          <div className="one-pass-barcode" aria-hidden="true" />
-
-          <div className="one-pass-passenger">
-            <span>Passenger</span>
-            <strong>{boardingPassDetails.passenger}</strong>
-            <small>Passport no. {boardingPassDetails.passportNumber}</small>
-          </div>
-
-          <div className="one-pass-route">
-            <div>
-              <span>From</span>
-              <strong>{boardingPassDetails.from}</strong>
-            </div>
-            <div>
-              <span>To</span>
-              <strong>{boardingPassDetails.to}</strong>
-            </div>
-            <div>
-              <span>Terminal</span>
-              <strong>{boardingPassDetails.platform}</strong>
-            </div>
-          </div>
-
-          <div className="one-pass-fields">
-            <span><small>Flight</small><strong>{boardingPassDetails.flight}</strong></span>
-            <span><small>Gate</small><strong>{boardingPassDetails.gate}</strong></span>
-            <span><small>Seat</small><strong>{boardingPassDetails.seat}</strong></span>
-            <span><small>Arrival</small><strong>{boardingPassDetails.arrival}</strong></span>
-            <span><small>Departure</small><strong>{boardingPassDetails.departure}</strong></span>
-            <span><small>Class</small><strong>{boardingPassDetails.classType}</strong></span>
-          </div>
-
-          <div className="one-pass-stub">
-            <strong>BASE6</strong>
-            <span>Boarding pass</span>
-            <small>{boardingPassDetails.passportNumber}</small>
-          </div>
-        </div>
-
-        <div className="one-pass-footer">Please be at the gate when boarding begins</div>
-      </article>
-    );
+  function BoardingPassCard({ variant }: { variant: "paper" | "peek" | "flat" }) {
+    return <Base6BoardingPass details={boardingPassDetails} variant={variant} />;
   }
 
-  function canvasRoundRect(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
-    const nextRadius = Math.min(radius, width / 2, height / 2);
-    context.beginPath();
-    context.moveTo(x + nextRadius, y);
-    context.arcTo(x + width, y, x + width, y + height, nextRadius);
-    context.arcTo(x + width, y + height, x, y + height, nextRadius);
-    context.arcTo(x, y + height, x, y, nextRadius);
-    context.arcTo(x, y, x + width, y, nextRadius);
-    context.closePath();
-  }
-
-  function drawCanvasLabel(context: CanvasRenderingContext2D, label: string, value: string, x: number, y: number, width: number, height: number) {
-    canvasRoundRect(context, x, y, width, height, 18);
-    context.fillStyle = "rgba(255,255,255,.72)";
-    context.fill();
-    context.strokeStyle = "rgba(27, 15, 38, .08)";
-    context.lineWidth = 2;
-    context.stroke();
-    context.fillStyle = "rgba(35, 25, 46, .46)";
-    context.font = "700 18px Arial, sans-serif";
-    context.fillText(label.toUpperCase(), x + 20, y + 28);
-    context.fillStyle = "#1b1026";
-    context.font = "900 28px Arial, sans-serif";
-    context.fillText(value, x + 20, y + 64);
-  }
-
-  async function createBoardingPassShareImage() {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1600;
-    canvas.height = 700;
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("Could not create boarding pass image.");
-
-    const width = canvas.width;
-    const height = canvas.height;
-    context.clearRect(0, 0, width, height);
-
-    canvasRoundRect(context, 0, 0, width, height, 48);
-    context.clip();
-    context.fillStyle = "#fbf8ff";
-    context.fillRect(0, 0, width, height);
-
-    context.strokeStyle = "rgba(126, 68, 171, .08)";
-    context.lineWidth = 2;
-    for (let index = -height; index < width; index += 42) {
-      context.beginPath();
-      context.moveTo(index, height);
-      context.lineTo(index + height, 0);
-      context.stroke();
-    }
-
-    const headerGradient = context.createLinearGradient(0, 0, width, 0);
-    headerGradient.addColorStop(0, "#8726e8");
-    headerGradient.addColorStop(.52, "#c134ea");
-    headerGradient.addColorStop(1, "#f04abd");
-    context.fillStyle = headerGradient;
-    context.fillRect(0, 0, width, 150);
-
-    context.fillStyle = "#ffffff";
-    context.font = "900 54px Arial, sans-serif";
-    context.fillText("BASE6 AIRLINES", 58, 72);
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("PASSENGER TICKET AND PASSPORT CHECK", 60, 104);
-    context.font = "900 54px Arial, sans-serif";
-    context.textAlign = "right";
-    context.fillText("BOARDING PASS", width - 58, 72);
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("LEONIDA FIRST CLASS", width - 60, 104);
-    context.textAlign = "left";
-
-    const footerGradient = context.createLinearGradient(0, height - 88, width, height - 88);
-    footerGradient.addColorStop(0, "#8824ed");
-    footerGradient.addColorStop(1, "#f04ac6");
-    context.fillStyle = footerGradient;
-    context.fillRect(0, height - 88, width, 88);
-    context.fillStyle = "#ffffff";
-    context.font = "900 20px Arial, sans-serif";
-    context.textAlign = "center";
-    context.fillText("PLEASE BE AT THE GATE WHEN BOARDING BEGINS", width / 2, height - 36);
-    context.textAlign = "left";
-
-    const barcodeX = 54;
-    const barcodeY = 188;
-    const barcodeHeight = 390;
-    let cursor = barcodeX;
-    for (let index = 0; index < 36; index += 1) {
-      const barWidth = index % 5 === 0 ? 13 : index % 3 === 0 ? 8 : 5;
-      context.fillStyle = index % 2 === 0 ? "#05000b" : "rgba(5,0,11,.25)";
-      context.fillRect(cursor, barcodeY, barWidth, barcodeHeight);
-      cursor += barWidth + 7;
-    }
-
-    context.fillStyle = "rgba(35, 25, 46, .42)";
-    context.font = "800 18px Arial, sans-serif";
-    context.fillText("PASSENGER", 340, 205);
-    context.fillStyle = "#1b1026";
-    context.font = "900 48px Arial, sans-serif";
-    context.fillText(boardingPassDetails.passenger, 340, 258);
-    context.fillStyle = "rgba(35, 25, 46, .68)";
-    context.font = "700 20px Arial, sans-serif";
-    context.fillText(`Passport no. ${boardingPassDetails.passportNumber}`, 340, 292);
-
-    drawCanvasLabel(context, "From", boardingPassDetails.from, 340, 338, 245, 110);
-    drawCanvasLabel(context, "To", boardingPassDetails.to, 610, 338, 245, 110);
-    drawCanvasLabel(context, "Terminal", boardingPassDetails.platform, 880, 338, 300, 110);
-    drawCanvasLabel(context, "Flight", boardingPassDetails.flight, 340, 472, 160, 94);
-    drawCanvasLabel(context, "Gate", boardingPassDetails.gate, 520, 472, 140, 94);
-    drawCanvasLabel(context, "Seat", boardingPassDetails.seat, 680, 472, 150, 94);
-    drawCanvasLabel(context, "Class", boardingPassDetails.classType, 850, 472, 185, 94);
-
-    context.setLineDash([8, 14]);
-    context.strokeStyle = "rgba(50, 29, 60, .24)";
-    context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(1240, 150);
-    context.lineTo(1240, height - 88);
-    context.stroke();
-    context.setLineDash([]);
-
-    context.fillStyle = "#1b1026";
-    context.font = "900 54px Arial, sans-serif";
-    context.fillText("BASE6", 1310, 352);
-    context.fillStyle = "rgba(35, 25, 46, .54)";
-    context.font = "800 20px Arial, sans-serif";
-    context.fillText("BOARDING PASS", 1312, 386);
-    context.font = "900 24px Arial, sans-serif";
-    context.fillText(boardingPassDetails.passportNumber, 1312, 424);
-
-    return await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          reject(new Error("Could not export boarding pass image."));
-          return;
-        }
-        resolve(blob);
-      }, "image/png", 0.96);
-    });
-  }
 
   async function shareBoardingPass() {
+    const shareText = `${form.username || "Passenger"} has checked in for Leonida on BASE6. Passport ${passportNumber}.`;
     if (typeof window === "undefined") return;
 
-    setShareStatus("Preparing boarding pass…");
-    const signupUrl = `${window.location.origin}/signup`;
-    const shareText = `${form.username || "Passenger"} has checked in for Leonida on BASE6. Get your boarding pass:`;
+    const nav = window.navigator as Navigator & {
+      share?: (data: { title: string; text: string }) => Promise<void>;
+      clipboard?: Clipboard;
+    };
 
-    try {
-      const blob = await createBoardingPassShareImage();
-      const file = new File([blob], `base6-boarding-pass-${passportNumber}.png`, { type: "image/png" });
-      const nav = window.navigator as Navigator & {
-        canShare?: (data: ShareData & { files?: File[] }) => boolean;
-        share?: (data: ShareData & { files?: File[] }) => Promise<void>;
-        clipboard?: Clipboard;
-      };
-
-      if (nav.share && (!nav.canShare || nav.canShare({ files: [file] }))) {
+    if (nav.share) {
+      try {
         await nav.share({
           title: "BASE6 Boarding Pass",
           text: shareText,
-          url: signupUrl,
-          files: [file],
         });
-        setShareStatus("Boarding pass ready to share.");
-        return;
+      } catch {
+        // User cancelled native share; no action needed.
       }
+      return;
+    }
 
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = `base6-boarding-pass-${passportNumber}.png`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1200);
-
-      if (nav.clipboard) await nav.clipboard.writeText(signupUrl);
-      setShareStatus("Image downloaded. Signup link copied.");
-    } catch (error) {
-      setShareStatus(error instanceof Error ? error.message : "Could not share boarding pass.");
+    if (nav.clipboard) {
+      await nav.clipboard.writeText(shareText);
     }
   }
 
@@ -691,12 +479,7 @@ export default function SignupPage() {
                     />
                     Choose passport photo
                   </label>
-                  <div className="boarding-photo-actions">
-                    <button className="boarding-skip-button" type="button" onClick={nextStep}>
-                      Skip profile picture for now
-                    </button>
-                  </div>
-                  <p className="boarding-upload-note">You can skip this for now and add a passport photo later.</p>
+                  <p className="boarding-upload-note">This is local preview only for now — we’ll wire storage later.</p>
                 </div>
               )}
 
@@ -853,7 +636,7 @@ export default function SignupPage() {
                   <span className="printed-document__tear-copy">Swipe across tear line</span>
                 </div>
                 <div className="printed-document__pass">
-                  <BoardingPassCard />
+                  <BoardingPassCard variant="paper" />
                 </div>
               </div>
               <div className="base6-print-copy" aria-live="polite">
@@ -870,7 +653,7 @@ export default function SignupPage() {
                   <div className="passport-ticket-pocket" aria-hidden={!ticketReady}>
                     <div className="passport-document-stack">
                       <div className="passport-document-stack__ticket">
-                        <BoardingPassCard />
+                        <BoardingPassCard variant="peek" />
                       </div>
                       <div className="passport-document-stack__cover">
                         <Base6PassportCover passportNumber={passportNumber} />
@@ -888,15 +671,8 @@ export default function SignupPage() {
                       <Base6PassportIdentityPage details={passportIdentityDetails} />
                     </div>
                     <div className="passport-flat-ticket">
-                      <BoardingPassCard />
+                      <BoardingPassCard variant="flat" />
                     </div>
-                  </div>
-                  <div className="boarding-pass-share-panel">
-                    <button className="button secondary share-boarding-pass-cta" type="button" onClick={shareBoardingPass}>
-                      Share Boarding Pass
-                    </button>
-                    <p>You can share this later from your documents page.</p>
-                    {shareStatus && <span>{shareStatus}</span>}
                   </div>
                   <button className="button primary enter-lounge-cta" type="button" onClick={() => {
                     setPhase("leaving");
