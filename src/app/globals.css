@@ -140,6 +140,122 @@ button, input, textarea, select { font: inherit; }
 .passport-grid > div { border: 1px solid var(--border); border-radius: 18px; background: rgba(255,255,255,.035); padding: 14px; }
 .lounge-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .lounge-card { min-height: 248px; }
+
+.terminal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.terminal-card {
+  min-height: 174px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  align-content: space-between;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.20)),
+    linear-gradient(135deg, rgba(35,35,42,.98), rgba(17,17,22,.98));
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: 0 18px 38px rgba(0,0,0,.22);
+}
+.terminal-card:hover { border-color: rgba(179,92,255,.34); }
+.terminal-card-copy {
+  position: relative;
+  z-index: 2;
+  padding: 18px 18px 0;
+  display: grid;
+  gap: 8px;
+  max-width: 76%;
+}
+.terminal-card-copy strong {
+  font-size: clamp(25px, 6.5vw, 42px);
+  line-height: .9;
+  letter-spacing: -.055em;
+  font-weight: 1000;
+}
+.terminal-card-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.terminal-card-cta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: rgba(179,92,255,.14);
+  color: #f3dfff;
+  font-size: 13px;
+  font-weight: 1000;
+}
+.terminal-card-art {
+  position: absolute;
+  right: 16px;
+  top: 28px;
+  width: 96px;
+  height: 96px;
+  border: 2px solid rgba(224,100,255,.48);
+  background: rgba(179,92,255,.12);
+  opacity: .92;
+  z-index: 1;
+}
+.terminal-card-art::before,
+.terminal-card-art::after {
+  content: "";
+  position: absolute;
+  background: rgba(224,100,255,.92);
+}
+.terminal-card-chat .terminal-card-art {
+  border-radius: 30px;
+}
+.terminal-card-chat .terminal-card-art::before {
+  width: 48px;
+  height: 8px;
+  left: 22px;
+  top: 30px;
+  border-radius: 999px;
+  box-shadow: 0 18px 0 rgba(224,100,255,.92);
+}
+.terminal-card-chat .terminal-card-art::after {
+  width: 24px;
+  height: 24px;
+  right: 13px;
+  bottom: -8px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  transform: rotate(12deg);
+}
+.terminal-card-crew .terminal-card-art {
+  border-radius: 999px;
+}
+.terminal-card-crew .terminal-card-art::before {
+  width: 38px;
+  height: 38px;
+  left: 27px;
+  top: 17px;
+  border-radius: 999px;
+  box-shadow:
+    -28px 14px 0 -8px rgba(224,100,255,.72),
+    28px 14px 0 -8px rgba(224,100,255,.72);
+}
+.terminal-card-crew .terminal-card-art::after {
+  width: 72px;
+  height: 36px;
+  left: 10px;
+  bottom: 15px;
+  border-radius: 999px 999px 24px 24px;
+  box-shadow:
+    -28px 5px 0 -13px rgba(224,100,255,.72),
+    28px 5px 0 -13px rgba(224,100,255,.72);
+}
 .home-dashboard { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 16px; }
 .departure-board { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: #0c0c10; border: 1px solid rgba(179,92,255,.28); border-radius: 20px; padding: 16px; display: grid; gap: 10px; }
 .board-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,.12); color: var(--muted); }
@@ -156,7 +272,7 @@ button, input, textarea, select { font: inherit; }
 .form-grid { display: grid; gap: 12px; }
 
 @media (max-width: 1020px) {
-  .home-hero, .home-dashboard, .grid-2, .grid-3, .grid-4, .lounge-strip { grid-template-columns: 1fr; }
+  .home-hero, .home-dashboard, .grid-2, .grid-3, .grid-4, .lounge-strip, .terminal-card-grid { grid-template-columns: 1fr; }
   .hero-copy, .passport-card { min-height: auto; }
   .lounge-card { min-height: auto; }
 }

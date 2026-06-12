@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { crews as demoCrews, feed as demoFeed, sessions as demoSessions, stamps as demoStamps } from "@/components/DemoData";
 import { hasSupabaseEnv, supabase } from "@/lib/supabase";
 
@@ -166,36 +166,24 @@ export default function LoungePage() {
   const displayStamps = state.stamps.length ? state.stamps : demoStamps.slice(0, 4);
   const business = state.userProfile?.business_custom_text || state.userProfile?.business_type || "Leonida bound";
 
-  const loungeCards = useMemo(() => [
+  const terminalCards = [
     {
-      eyebrow: "Leonida countdown",
-      title: `${releaseCountdown.days} days`,
-      body: "Claim your passport, find your crew and wait in the lounge before the gates open.",
-      href: state.userProfile ? "/flight" : "/events",
-      cta: state.userProfile ? "See your Flight" : "View flight board",
+      href: "/social",
+      eyebrow: "Lounge chatter",
+      title: "Social Feed",
+      body: "Post theories, clips, sightings and launch-week chaos before the gates open.",
+      cta: "Open feed",
+      art: "chat",
     },
     {
-      eyebrow: "Live arrivals",
-      title: String(state.counts.profiles || state.recentArrivals.length || "—"),
-      body: "Real passports checked in through Supabase. Early members get the best passport numbers.",
-      href: "/passport",
-      cta: "Open passport",
-    },
-    {
-      eyebrow: "Crews recruiting",
-      title: String(state.counts.crews || demoCrews.length),
-      body: "Start recruiting before launch, set your crew style and build trust before everyone lands in Leonida.",
       href: "/crews",
+      eyebrow: "Crew terminal",
+      title: "Crews",
+      body: "Recruit your circle, find people to land with and start building your reputation early.",
       cta: "Browse crews",
+      art: "crew",
     },
-    {
-      eyebrow: "Open sessions",
-      title: String(state.counts.sessions || demoSessions.length),
-      body: "Car meets, photo walks, heist planning, chill lobbies and launch week squads all in one board.",
-      href: "/sessions",
-      cta: "Find sessions",
-    },
-  ], [state.counts, state.recentArrivals.length, state.userProfile, releaseCountdown.days]);
+  ];
 
   return (
     <div className="page stack home-page">
@@ -249,71 +237,16 @@ export default function LoungePage() {
         </div>
       </section>
 
-      <section className="home-hero">
-        <div className="hero-copy stack">
-          <div className="button-row">
-            <span className="pill hot">Unofficial GTA 6 community hub</span>
-            <span className="pill">{isLoading ? "Loading lounge..." : "Pre-launch lounge open"}</span>
-          </div>
-          <div className="stack hero-title-wrap">
-            <span className="eyebrow">BASE6 Passport Control</span>
-            <h1 className="h1">{state.userProfile ? `Welcome to Leonida, ${state.userProfile.username}.` : "Check in before Leonida opens."}</h1>
-            <p className="copy hero-lede">
-              {state.userProfile
-                ? `Passport ${state.userProfile.passport_number} is checked in on Flight ${state.userProfile.boarding_flight || "A-00"}, Seat ${state.userProfile.boarding_seat || "1A"}. Business in Leonida: ${business}.`
-                : "BASE6 is a GTA 6 community experience built around passports, stamps, crews, sessions, events and player reputation."}
-            </p>
-          </div>
-          <div className="button-row">
-            <Link className="button primary" href={state.userProfile ? "/boarding-pass" : "/signup"}>{state.userProfile ? "See Boarding Pass" : "Start passport check-in"}</Link>
-            <Link className="button" href={state.userProfile ? "/passport" : "/sessions"}>{state.userProfile ? "See Passport" : "Explore the lounge"}</Link>
-            <Link className="button" href={state.userProfile ? "/flight" : "/events"}>{state.userProfile ? "See Flight" : "View lounge"}</Link>
-          </div>
-        </div>
-
-        <aside className="card passport-card stack">
-          <div className="passport-topline">
-            <span className="eyebrow">Traveller file</span>
-            <span className="status-dot">{state.userProfile ? "Checked in" : "Guest"}</span>
-          </div>
-          <div className="passport-id">
-            <div className="avatar-stub">
-              {state.userProfile?.avatar_url ? <img src={state.userProfile.avatar_url} alt="Passport ID" style={{ width: "100%", height: "100%", borderRadius: 18, objectFit: "cover" }} /> : "B6"}
+      <section className="terminal-card-grid" aria-label="BASE6 terminal shortcuts">
+        {terminalCards.map((item) => (
+          <Link key={item.title} href={item.href} className={`terminal-card terminal-card-${item.art}`}>
+            <div className="terminal-card-copy">
+              <span className="eyebrow">{item.eyebrow}</span>
+              <strong>{item.title}</strong>
+              <p>{item.body}</p>
             </div>
-            <div>
-              <p className="copy"><strong>{state.userProfile?.username || "Passenger pending"}</strong></p>
-              <p className="copy faint">{state.userProfile?.passport_number || "Board flight to issue passport"}</p>
-            </div>
-          </div>
-          <div className="passport-grid">
-            <div><span className="metric-label">Stamps</span><strong>{state.stamps.length || displayStamps.length}</strong></div>
-            <div><span className="metric-label">Flight</span><strong>{state.userProfile?.boarding_flight || "TBC"}</strong></div>
-            <div><span className="metric-label">Seat</span><strong>{state.userProfile?.boarding_seat || "TBC"}</strong></div>
-          </div>
-          <div className="passport-stamps compact-stamps">
-            {displayStamps.slice(0, 4).map((stamp) => <span key={stamp} className="stamp">{stamp}</span>)}
-          </div>
-          <Link className="flight-preview-card" href={state.userProfile ? "/flight" : "/signup"}>
-            <span>See your Flight</span>
-            <strong>{state.userProfile?.boarding_flight || "B6"} · {state.userProfile?.boarding_seat || "Boarding pass needed"}</strong>
-            <div className="flight-preview-avatars" aria-hidden="true">
-              {(state.flightPassengers.length ? state.flightPassengers : state.recentArrivals).slice(0, 5).map((profile) => (
-                <span key={profile.id}>
-                  {profile.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile.username || "B6").slice(0, 2).toUpperCase()}
-                </span>
-              ))}
-            </div>
-          </Link>
-        </aside>
-      </section>
-
-      <section className="lounge-strip">
-        {loungeCards.map((item) => (
-          <Link key={item.eyebrow} href={item.href} className="card lounge-card stack">
-            <span className="eyebrow">{item.eyebrow}</span>
-            <h2 className="h2">{item.title}</h2>
-            <p className="copy">{item.body}</p>
-            <span className="mini-link">{item.cta} →</span>
+            <span className="terminal-card-art" aria-hidden="true" />
+            <span className="terminal-card-cta">{item.cta} →</span>
           </Link>
         ))}
       </section>
@@ -362,7 +295,7 @@ export default function LoungePage() {
           ))}
         </div>
         <div className="card stack">
-          <div className="section-title-row"><div><span className="eyebrow">Community feed</span><h2 className="h2">Lounge chatter</h2></div><Link className="pill" href="/feed">Feed</Link></div>
+          <div className="section-title-row"><div><span className="eyebrow">Community feed</span><h2 className="h2">Lounge chatter</h2></div><Link className="pill" href="/social">Feed</Link></div>
           {(state.livePosts.length ? state.livePosts : demoFeed).map((post: any) => (
             <div className="muted-card" key={post.id || post.title}>
               <span className="pill hot">{post.post_type || post.tag}</span>
