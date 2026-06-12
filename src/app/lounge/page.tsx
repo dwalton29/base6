@@ -15,6 +15,8 @@ type Profile = {
   business_type: string | null;
   business_custom_text: string | null;
   reputation_score: number | null;
+  boarding_flight: string | null;
+  boarding_seat: string | null;
   created_at: string;
 };
 
@@ -97,7 +99,7 @@ export default function LoungePage() {
         const user = userData.user;
 
         const [profilesRes, crewsRes, sessionsRes, postsRes] = await Promise.all([
-          supabase.from("profiles").select("id, username, passport_number, platform, platform_handle, avatar_url, business_type, business_custom_text, reputation_score, created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(6),
+          supabase.from("profiles").select("id, username, passport_number, platform, platform_handle, avatar_url, business_type, business_custom_text, reputation_score, boarding_flight, boarding_seat, created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(6),
           supabase.from("crews").select("id, name, description, recruitment_status, reputation_score, crew_members(count)", { count: "exact" }).order("created_at", { ascending: false }).limit(3),
           supabase.from("sessions").select("id, title, session_type, platform, starts_at, max_players, status, profiles(username)", { count: "exact" }).order("created_at", { ascending: false }).limit(3),
           supabase.from("community_posts").select("id, post_type, title, body, profiles(username)", { count: "exact" }).order("created_at", { ascending: false }).limit(3),
@@ -109,7 +111,7 @@ export default function LoungePage() {
         if (user) {
           const { data: profileData } = await supabase
             .from("profiles")
-            .select("id, username, passport_number, platform, platform_handle, avatar_url, business_type, business_custom_text, reputation_score, created_at")
+            .select("id, username, passport_number, platform, platform_handle, avatar_url, business_type, business_custom_text, reputation_score, boarding_flight, boarding_seat, created_at")
             .eq("id", user.id)
             .maybeSingle();
 
@@ -255,7 +257,7 @@ export default function LoungePage() {
             <h1 className="h1">{state.userProfile ? `Welcome to Leonida, ${state.userProfile.username}.` : "Check in before Leonida opens."}</h1>
             <p className="copy hero-lede">
               {state.userProfile
-                ? `Passport ${state.userProfile.passport_number} is checked in. Business in Leonida: ${business}.`
+                ? `Passport ${state.userProfile.passport_number} is checked in on Flight ${state.userProfile.boarding_flight || "A-00"}, Seat ${state.userProfile.boarding_seat || "1A"}. Business in Leonida: ${business}.`
                 : "BASE6 is a GTA 6 community experience built around passports, stamps, crews, sessions, events and player reputation."}
             </p>
           </div>
@@ -281,8 +283,8 @@ export default function LoungePage() {
           </div>
           <div className="passport-grid">
             <div><span className="metric-label">Stamps</span><strong>{state.stamps.length || displayStamps.length}</strong></div>
-            <div><span className="metric-label">Platform</span><strong>{state.userProfile?.platform || "TBC"}</strong></div>
-            <div><span className="metric-label">Rep</span><strong>{state.userProfile?.reputation_score ?? 0}</strong></div>
+            <div><span className="metric-label">Flight</span><strong>{state.userProfile?.boarding_flight || "TBC"}</strong></div>
+            <div><span className="metric-label">Seat</span><strong>{state.userProfile?.boarding_seat || "TBC"}</strong></div>
           </div>
           <div className="passport-stamps compact-stamps">
             {displayStamps.slice(0, 4).map((stamp) => <span key={stamp} className="stamp">{stamp}</span>)}
@@ -309,7 +311,7 @@ export default function LoungePage() {
           </div>
           <div className="departure-board">
             {(state.recentArrivals.length ? state.recentArrivals : []).map((profile) => (
-              <div className="board-row" key={profile.id}><span>{profile.username}</span><strong>{profile.platform || "TBC"}</strong></div>
+              <div className="board-row" key={profile.id}><span>{profile.username}</span><strong>{profile.boarding_flight || "A-00"} · {profile.boarding_seat || "TBC"}</strong></div>
             ))}
             {!state.recentArrivals.length && ["PASSPORT CHECK-IN", "CREW TERMINAL", "COMMUNITY EVENTS"].map((row) => <div className="board-row" key={row}><span>{row}</span><strong>OPEN</strong></div>)}
           </div>

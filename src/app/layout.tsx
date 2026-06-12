@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "../components/crews/CrewStyles.css";
+import "../components/passport/PassportStyles.css";
+import "../components/onboarding/OnboardingStyles.css";
+import "../components/passport/PassportStampAwardStyles.css";
 import Nav from "@/components/Nav";
+import PassportStampAward from "@/components/passport/PassportStampAward";
 import { site } from "@/theme";
 
 export const metadata: Metadata = {
@@ -29,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Nav />
         <main className="app-shell">{children}</main>
+        <PassportStampAward />
       </body>
     </html>
   );

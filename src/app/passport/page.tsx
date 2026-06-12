@@ -1,80 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { Base6PassportCover, Base6PassportIdentityPage } from "@/components/base6/PassportDesign";
 import { useEffect, useMemo, useState } from "react";
+import { PassportBook } from "@/components/passport/PassportBook";
+import {
+  buildPassportIdentityDetails,
+  chunkPassportStamps,
+  fallbackPassportStamps,
+  parsePassportStampRows,
+  type PassportProfile,
+  type PassportStamp,
+  type PassportStampRow,
+} from "@/lib/passport";
 import { supabase, hasSupabaseEnv } from "@/lib/supabase";
 
-type Profile = {
-  username: string;
-  passport_number: string;
-  platform: string | null;
-  platform_handle: string | null;
-  avatar_url: string | null;
-  crime_history: string | null;
-  san_andreas_since_year: number | null;
-  business_type: string | null;
-  business_custom_text: string | null;
-  bio: string | null;
-  reputation_score: number;
-  created_at?: string | null;
-};
-
-type Stamp = {
-  name: string;
-  description: string | null;
-  icon: string | null;
-  code?: string | null;
-  granted_at?: string | null;
-};
-
-type StampRow = {
-  granted_at: string | null;
-  passport_stamps:
-    | {
-        name: string;
-        description: string | null;
-        icon: string | null;
-        code: string | null;
-      }
-    | {
-        name: string;
-        description: string | null;
-        icon: string | null;
-        code: string | null;
-      }[]
-    | null;
-};
-
-const fallbackStamps: Stamp[] = [
-  {
-    name: "Checked In",
-    description: "Issued your first Leonida boarding pass.",
-    icon: "✈️",
-    code: "checked_in",
-  },
-];
-
-function formatDate(value?: string | null) {
-  if (!value) return "Pending";
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(value));
-}
-
-function getPlatformLabel(platform?: string | null) {
-  if (!platform) return "Player ID";
-  if (platform.includes("PlayStation")) return "PSN";
-  if (platform.includes("Xbox")) return "Gamertag";
-  if (platform.includes("Steam") || platform.includes("PC")) return "Steam";
-  return "Player ID";
-}
-
 export default function PassportPage() {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [stamps, setStamps] = useState<Stamp[]>([]);
+  const [profile, setProfile] = useState<PassportProfile | null>(null);
+  const [stamps, setStamps] = useState<PassportStamp[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
@@ -115,7 +57,7 @@ export default function PassportPage() {
         return;
       }
 
-      setProfile(profileData as Profile);
+      setProfile(profileData as PassportProfile);
 
       const { data: stampData } = await supabase
         .from("user_passport_stamps")
@@ -123,55 +65,17 @@ export default function PassportPage() {
         .eq("user_id", user.id)
         .order("granted_at", { ascending: true });
 
-      const parsedStamps = ((stampData as StampRow[] | null) || [])
-        .map((row) => {
-          const stamp = Array.isArray(row.passport_stamps) ? row.passport_stamps[0] : row.passport_stamps;
-          if (!stamp) return null;
-          return {
-            name: stamp.name,
-            description: stamp.description,
-            icon: stamp.icon,
-            code: stamp.code,
-            granted_at: row.granted_at,
-          };
-        })
-        .filter(Boolean) as Stamp[];
-
-      setStamps(parsedStamps.length ? parsedStamps : fallbackStamps);
+      const parsedStamps = parsePassportStampRows(stampData as PassportStampRow[] | null);
+      setStamps(parsedStamps.length ? parsedStamps : fallbackPassportStamps);
       setIsLoading(false);
     }
 
     loadPassport();
   }, []);
 
-  const business = profile?.business_custom_text || profile?.business_type || "Lounge traveller";
-  const record = profile?.crime_history === "Spent time in San Andreas"
-    ? `San Andreas · moved there in ${profile.san_andreas_since_year || 2013}`
-    : profile?.crime_history || "Clean record";
-  const issueDate = formatDate(profile?.created_at);
-  const passportIdentityDetails = profile ? {
-    username: profile.username,
-    passportNumber: profile.passport_number,
-    avatarUrl: profile.avatar_url,
-    platform: profile.platform,
-    handleLabel: getPlatformLabel(profile.platform),
-    handle: profile.platform_handle,
-    issued: issueDate,
-    record,
-    business,
-    bio: profile.bio,
-    reputation: profile.reputation_score,
-  } : null;
-
-  const stampPages = useMemo(() => {
-    const source = stamps.length ? stamps : fallbackStamps;
-    const chunks: Stamp[][] = [];
-    for (let i = 0; i < source.length; i += 6) chunks.push(source.slice(i, i + 6));
-    return chunks.length ? chunks : [fallbackStamps];
-  }, [stamps]);
-
+  const stampPages = useMemo(() => chunkPassportStamps(stamps), [stamps]);
   const totalPages = 1 + stampPages.length;
-  const currentStampPage = pageIndex > 0 ? stampPages[pageIndex - 1] : [];
+  const identityDetails = profile ? buildPassportIdentityDetails(profile) : null;
 
   function turnPage(direction: "next" | "previous") {
     if (isTurning) return;
@@ -188,11 +92,8 @@ export default function PassportPage() {
     }, 520);
   }
 
-  const goPrevious = () => turnPage("previous");
-  const goNext = () => turnPage("next");
-
   return (
-    <div className="page passport-page-shell">
+    <div className="b6-passport-page">
       {isLoading && (
         <section className="card stack">
           <span className="eyebrow">Passport control</span>
@@ -208,72 +109,20 @@ export default function PassportPage() {
         </section>
       )}
 
-      {!isLoading && profile && (
-        <section className={`passport-book-stage ${hasOpened ? "is-open" : "is-closed"}`}>
-          <div className="passport-closed-cover" aria-hidden="true">
-            <Base6PassportCover passportNumber={profile.passport_number} />
-          </div>
-
-          <div className={`passport-book ${hasOpened ? "open" : ""}`}>
-            <article
-              className={`passport-paper-page ${isTurning ? `is-turning ${turnDirection === "next" ? "turn-next" : "turn-previous"}` : ""}`}
-              key={pageIndex}
-            >
-              <div className="passport-page-topline">
-                <span className="eyebrow">{pageIndex === 0 ? "Passenger details" : `Stamp page ${pageIndex}`}</span>
-                <span className="passport-page-number">{pageIndex + 1}/{totalPages}</span>
-              </div>
-
-              {pageIndex === 0 && passportIdentityDetails ? (
-                <div className="base6-open-passport-spread passport-directory-spread">
-                  <Base6PassportIdentityPage details={passportIdentityDetails} />
-                </div>
-              ) : (
-                <div className="passport-stamp-sheet">
-                  <div className="passport-stamp-intro">
-                    <h2>Collected stamps</h2>
-                    <p>Pages fill up as you check in, join crews, attend meets, post sessions, and build your Leonida record.</p>
-                  </div>
-
-                  <div className="passport-stamp-grid-book">
-                    {currentStampPage.map((stamp, index) => (
-                      <div className="passport-book-stamp" key={`${stamp.name}-${index}`}>
-                        <span className="stamp-icon">{stamp.icon || "✦"}</span>
-                        <strong>{stamp.name}</strong>
-                        <p>{stamp.description || "Stamped into your travel record."}</p>
-                        <small>{formatDate(stamp.granted_at)}</small>
-                      </div>
-                    ))}
-                    {Array.from({ length: Math.max(0, 6 - currentStampPage.length) }).map((_, index) => (
-                      <div className="passport-book-stamp empty" key={`empty-${index}`}>
-                        <span className="stamp-icon">＋</span>
-                        <strong>Empty slot</strong>
-                        <p>Earn another stamp to fill this page.</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </article>
-          </div>
-
-          <div className="passport-book-controls">
-            <button className="button" type="button" onClick={goPrevious} disabled={pageIndex === 0}>← Previous page</button>
-            <div className="passport-page-dots" aria-label="Passport pages">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  className={index === pageIndex ? "active" : ""}
-                  type="button"
-                  onClick={() => setPageIndex(index)}
-                  aria-label={`Open passport page ${index + 1}`}
-                />
-              ))}
-            </div>
-            <button className="button primary" type="button" onClick={goNext} disabled={pageIndex === totalPages - 1}>Next page →</button>
-          </div>
-
-        </section>
+      {!isLoading && profile && identityDetails && (
+        <PassportBook
+          passportNumber={profile.passport_number}
+          identityDetails={identityDetails}
+          stampPages={stampPages}
+          pageIndex={pageIndex}
+          totalPages={totalPages}
+          hasOpened={hasOpened}
+          isTurning={isTurning}
+          turnDirection={turnDirection}
+          onPrevious={() => turnPage("previous")}
+          onNext={() => turnPage("next")}
+          onOpenPage={setPageIndex}
+        />
       )}
     </div>
   );

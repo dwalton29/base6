@@ -1,0 +1,4142 @@
+/* Base6 onboarding form legacy essentials moved out of globals.css during global cleanup.
+   These are intentionally loaded before the newer onboarding rules below so the final
+   ticket/passport print rules keep priority. */
+.signup-screen {
+  min-height: calc(100dvh - 64px);
+  margin: -24px -16px -92px;
+  padding: clamp(18px, 4vw, 44px) 16px 96px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(179,92,255,.16), transparent 26rem),
+    radial-gradient(circle at 92% 88%, rgba(255,139,216,.10), transparent 28rem),
+    linear-gradient(180deg, #202024 0%, #18181c 48%, #111115 100%);
+}
+
+.signup-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .32;
+  background-image:
+    linear-gradient(rgba(255,255,255,.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 86%, transparent);
+}
+
+.boarding-shell {
+  width: min(980px, 100%);
+  display: grid;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.boarding-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.boarding-back-link {
+  color: var(--muted);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 13px;
+}
+
+.boarding-back-link:hover { color: #fff; }
+.boarding-code { color: var(--accent-2); }
+
+.boarding-progress {
+  height: 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(0,0,0,.22);
+  overflow: hidden;
+}
+
+.boarding-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-3));
+  box-shadow: 0 0 24px rgba(179,92,255,.34);
+  transition: width .34s ease;
+}
+
+.boarding-step-card {
+  min-height: 520px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 32px;
+  background:
+    linear-gradient(135deg, rgba(179,92,255,.12), transparent 44%),
+    linear-gradient(180deg, rgba(35,35,42,.96), rgba(22,22,27,.96));
+  box-shadow: 0 24px 62px rgba(0,0,0,.34);
+  padding: clamp(20px, 5vw, 48px);
+  display: grid;
+  align-content: center;
+  gap: 28px;
+  animation: signupStepFade .42s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.boarding-step-card:after {
+  content: "BOARDING";
+  position: absolute;
+  right: -16px;
+  bottom: 8px;
+  color: rgba(255,255,255,.035);
+  font-size: clamp(54px, 12vw, 128px);
+  font-weight: 1000;
+  letter-spacing: -.09em;
+  pointer-events: none;
+}
+
+.boarding-question,
+.boarding-answer,
+.boarding-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.boarding-title {
+  max-width: 860px;
+  font-size: clamp(38px, 7vw, 82px);
+  text-wrap: balance;
+}
+
+.boarding-copy {
+  max-width: 560px;
+  font-size: 16px;
+}
+
+.boarding-input,
+.boarding-textarea {
+  width: min(620px, 100%);
+  border: 1px solid rgba(230,160,255,.32);
+  border-radius: 22px;
+  background: rgba(0,0,0,.22);
+  color: #fff;
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.boarding-input {
+  min-height: 64px;
+  padding: 0 20px;
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 850;
+}
+
+.boarding-textarea {
+  min-height: 150px;
+  padding: 18px 20px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.boarding-input::placeholder,
+.boarding-textarea::placeholder { color: rgba(247,243,255,.38); }
+
+.boarding-input:focus,
+.boarding-textarea:focus {
+  border-color: rgba(230,160,255,.72);
+  box-shadow: 0 0 0 4px rgba(179,92,255,.12);
+}
+
+.boarding-choice-grid {
+  width: min(720px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.boarding-choice {
+  min-height: 58px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  color: var(--muted);
+  padding: 14px;
+  text-align: left;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.boarding-choice:hover,
+.boarding-choice.selected {
+  border-color: rgba(230,160,255,.58);
+  background: rgba(179,92,255,.16);
+  color: #fff;
+}
+
+.boarding-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: min(620px, 100%);
+}
+
+.button:disabled,
+.disabled-link {
+  opacity: .42;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.boarding-pass-preview {
+  border: 1px solid rgba(179,92,255,.22);
+  border-radius: 24px;
+  background: rgba(18,18,22,.74);
+  backdrop-filter: blur(18px);
+  padding: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, .9fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.boarding-pass-preview h2 {
+  margin: 8px 0 4px;
+  font-size: 26px;
+  letter-spacing: -.04em;
+}
+
+.boarding-pass-preview p { margin: 0; color: var(--faint); }
+
+.boarding-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.boarding-preview-grid span {
+  min-height: 74px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255,255,255,.035);
+  padding: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+}
+
+.boarding-preview-grid strong {
+  display: block;
+  color: var(--accent-2);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.boarding-preview-bio {
+  border-left: 1px dashed rgba(230,160,255,.32);
+  padding-left: 14px;
+  line-height: 1.5;
+}
+
+@keyframes signupStepFade {
+  from { opacity: 0; transform: translateY(16px); filter: blur(7px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@media (max-width: 860px) {
+  .signup-screen {
+    min-height: calc(100dvh - 64px);
+    margin: -16px -16px -92px;
+    padding: 18px 14px 96px;
+    align-items: start;
+  }
+
+  .boarding-topline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .boarding-step-card {
+    min-height: 560px;
+    border-radius: 24px;
+    gap: 22px;
+  }
+
+  .boarding-choice-grid,
+  .boarding-actions,
+  .boarding-input,
+  .boarding-textarea {
+    width: 100%;
+  }
+
+  .boarding-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boarding-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .boarding-pass-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .boarding-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boarding-preview-bio {
+    border-left: 0;
+    border-top: 1px dashed rgba(230,160,255,.32);
+    padding: 14px 0 0;
+  }
+}
+
+.boarding-flow.hidden {
+  opacity: 0;
+  transform: translateY(18px) scale(.985);
+  filter: blur(10px);
+  pointer-events: none;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.boarding-flow.revealed {
+  display: grid;
+  gap: 14px;
+  opacity: 0;
+  animation: boardingFlowReveal .62s ease .16s both;
+}
+
+.boarding-pass-gate {
+  min-height: min(680px, calc(100dvh - 160px));
+  display: grid;
+  place-items: center;
+}
+
+.boarding-pass-ticket {
+  --tear-progress: 0%;
+  width: min(840px, 100%);
+  min-height: 310px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(230,160,255,.28);
+  background:
+    linear-gradient(135deg, rgba(179,92,255,.18), transparent 48%),
+    linear-gradient(180deg, rgba(245,241,250,.96), rgba(222,217,230,.96));
+  color: #16131c;
+  box-shadow: 0 30px 90px rgba(0,0,0,.42), 0 0 50px rgba(179,92,255,.15);
+  animation: boardingPassDrop .82s cubic-bezier(.16, .94, .22, 1.08) both;
+}
+
+.boarding-pass-ticket:active { cursor: grabbing; }
+
+.boarding-pass-ticket:before,
+.boarding-pass-ticket:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #18181c;
+  transform: translateY(-50%);
+}
+
+.boarding-pass-ticket:before { left: -17px; }
+.boarding-pass-ticket:after { right: -17px; }
+
+.ticket-main,
+.ticket-stub {
+  position: relative;
+  z-index: 2;
+}
+
+.ticket-main {
+  padding: clamp(22px, 5vw, 46px);
+  display: grid;
+  align-content: center;
+  gap: 16px;
+}
+
+.ticket-main .eyebrow { color: #8a33d8; }
+
+.ticket-main h1 {
+  margin: 0;
+  max-width: 590px;
+  font-size: clamp(44px, 8vw, 82px);
+  line-height: .84;
+  letter-spacing: -.075em;
+  color: #15111c;
+  text-wrap: balance;
+}
+
+.ticket-main p {
+  max-width: 480px;
+  margin: 0;
+  color: rgba(21,17,28,.68);
+  line-height: 1.55;
+  font-weight: 760;
+}
+
+.ticket-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ticket-details span {
+  min-height: 68px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  border: 1px solid rgba(21,17,28,.10);
+  border-radius: 16px;
+  background: rgba(255,255,255,.42);
+  padding: 12px;
+  color: rgba(21,17,28,.78);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.ticket-details strong {
+  display: block;
+  color: #8a33d8;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.ticket-stub {
+  border-left: 2px dashed rgba(21,17,28,.18);
+  background:
+    linear-gradient(180deg, rgba(179,92,255,.14), rgba(255,139,216,.12)),
+    rgba(255,255,255,.22);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 18px;
+  text-align: center;
+}
+
+.ticket-stub span {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: rgba(21,17,28,.52);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .22em;
+}
+
+.ticket-stub strong {
+  color: #15111c;
+  font-size: 26px;
+  letter-spacing: -.06em;
+}
+
+.tear-line {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 50%;
+  z-index: 5;
+  height: 46px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.tear-line:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background-image: linear-gradient(90deg, rgba(21,17,28,.38) 0 10px, transparent 10px 20px);
+  background-size: 20px 2px;
+}
+
+.tear-fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--tear-progress);
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #b35cff, #ff8bd8);
+  transform: translateY(-50%);
+  box-shadow: 0 0 20px rgba(179,92,255,.28);
+  transition: width .08s linear;
+}
+
+.tear-handle {
+  position: absolute;
+  left: min(calc(var(--tear-progress) + 4px), calc(100% - 94px));
+  min-width: 86px;
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #15111c;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .03em;
+  box-shadow: 0 12px 24px rgba(0,0,0,.22);
+  transition: left .08s linear;
+}
+
+.boarding-pass-ticket.is-tearing .ticket-main,
+.boarding-pass-ticket.is-tearing .ticket-stub {
+  transform: translateY(calc(var(--tear-progress) * -.025));
+}
+
+.pass-open .boarding-pass-gate {
+  animation: tornPassExit .52s ease both;
+}
+
+@keyframes boardingPassDrop {
+  from { opacity: 0; transform: translateY(-130px) rotate(-1.5deg); filter: blur(9px); }
+  68% { opacity: 1; transform: translateY(8px) rotate(.5deg); filter: blur(0); }
+  to { opacity: 1; transform: translateY(0) rotate(0); filter: blur(0); }
+}
+
+@keyframes boardingFlowReveal {
+  from { opacity: 0; transform: translateY(24px); filter: blur(10px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes tornPassExit {
+  from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  to { opacity: 0; transform: translateY(-36px) scale(.96); filter: blur(10px); }
+}
+
+@media (max-width: 860px) {
+  .boarding-pass-gate {
+    min-height: min(640px, calc(100dvh - 120px));
+    align-items: center;
+  }
+
+  .boarding-pass-ticket {
+    grid-template-columns: 1fr;
+    min-height: 430px;
+    border-radius: 24px;
+  }
+
+  .ticket-stub {
+    min-height: 92px;
+    border-left: 0;
+    border-top: 2px dashed rgba(21,17,28,.18);
+    grid-template-columns: auto auto;
+    align-content: center;
+  }
+
+  .ticket-stub span {
+    writing-mode: horizontal-tb;
+    letter-spacing: .14em;
+  }
+
+  .ticket-details {
+    grid-template-columns: 1fr;
+  }
+
+  .tear-line {
+    left: 18px;
+    right: 18px;
+    top: auto;
+    bottom: 88px;
+  }
+}
+
+/* Signup end-sequence: details first, then printed boarding pass */
+.signup-screen {
+  min-height: 100dvh;
+  margin: -24px -16px -92px;
+  padding: clamp(18px, 4vw, 44px) 16px 96px;
+}
+
+.signup-details-shell {
+  transition: opacity .72s ease, transform .72s ease, filter .72s ease;
+}
+
+.signup-phase-fading .signup-details-shell {
+  opacity: 0;
+  transform: scale(.982) translateY(14px);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.signup-blackout {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.signup-phase-fading .signup-blackout {
+  animation: signupFadeToBlack .95s ease both;
+}
+
+.signup-phase-ticket .signup-blackout {
+  opacity: 1;
+  animation: signupBlackReveal .8s ease .28s both;
+}
+
+.signup-phase-leaving .signup-blackout {
+  opacity: 0;
+  animation: signupFinalBlackout .48s ease both;
+}
+
+/* Boarding signup: photo ID + custom Leonida business */
+.boarding-photo-upload {
+  width: min(620px, 100%);
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.boarding-photo-preview {
+  width: 132px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(230,160,255,.38);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(224,100,255,.24), transparent 58%),
+    rgba(0,0,0,.24);
+  color: rgba(247,243,255,.78);
+  font-size: 34px;
+  font-weight: 1000;
+  letter-spacing: -.06em;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+}
+
+.boarding-photo-preview img,
+.boarding-preview-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.boarding-upload-button {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(230,160,255,.38);
+  border-radius: 999px;
+  background: rgba(179,92,255,.12);
+  color: #fff;
+  padding: 0 18px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.boarding-upload-button:hover {
+  border-color: rgba(230,160,255,.72);
+  background: rgba(179,92,255,.18);
+}
+
+.boarding-upload-button input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+.boarding-upload-note {
+  margin: 0;
+  color: var(--faint);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.boarding-business-stack {
+  width: min(720px, 100%);
+  display: grid;
+  gap: 12px;
+}
+
+.boarding-business-stack .boarding-choice-grid {
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.boarding-custom-business {
+  width: 100%;
+  min-height: 58px;
+  font-size: 16px;
+}
+
+.boarding-preview-id-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.boarding-preview-avatar {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(230,160,255,.34);
+  border-radius: 18px;
+  background: rgba(179,92,255,.14);
+  color: #efd7ff;
+  font-weight: 1000;
+  overflow: hidden;
+}
+
+.boarding-preview-id-row h2,
+.boarding-preview-id-row p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 860px) {
+  .boarding-photo-upload,
+  .boarding-business-stack {
+    width: 100%;
+  }
+
+  .boarding-business-stack .boarding-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Printed boarding pass: passenger photo ID */
+.ticket-passenger-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.ticket-passenger-copy {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.ticket-photo-id {
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(21,17,28,.16);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(179,92,255,.18), transparent 58%),
+    rgba(255,255,255,.42);
+  color: rgba(21,17,28,.72);
+  font-size: 32px;
+  font-weight: 1000;
+  letter-spacing: -.08em;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.42);
+}
+
+.ticket-photo-id img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 860px) {
+  .ticket-passenger-row {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .ticket-photo-id {
+    width: 82px;
+    height: 82px;
+    border-radius: 16px;
+    font-size: 24px;
+  }
+
+  .ticket-passenger-copy {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 430px) {
+  .ticket-passenger-row {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .ticket-photo-id {
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    font-size: 20px;
+  }
+}
+
+/* San Andreas declaration sub-question */
+.boarding-declaration-stack {
+  width: min(720px, 100%);
+  display: grid;
+  gap: 14px;
+}
+
+.boarding-declaration-stack .boarding-choice-grid {
+  width: 100%;
+}
+
+.boarding-sub-question {
+  border: 1px solid rgba(230,160,255,.22);
+  border-radius: 20px;
+  background: rgba(179,92,255,.08);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  animation: signupStepFade .35s ease both;
+}
+
+.boarding-sub-question label {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.boarding-year-select {
+  min-height: 54px;
+  width: min(260px, 100%);
+}
+
+.boarding-sub-question p {
+  margin: 0;
+  color: var(--faint);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+@media (max-width: 860px) {
+  .boarding-declaration-stack {
+    width: 100%;
+  }
+}
+
+/* Mobile spacing cleanup: keep check-in focused and stop the form becoming a long page */
+.checkin-experience-strip,
+.boarding-pass-preview {
+  display: none !important;
+}
+
+.signup-details-shell {
+  width: min(760px, 100%);
+}
+
+.signup-details-shell .boarding-step-card {
+  min-height: 0;
+  padding: clamp(20px, 4vw, 34px);
+  gap: 18px;
+}
+
+.signup-details-shell .boarding-title {
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: .96;
+}
+
+.signup-details-shell .boarding-copy {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.signup-details-shell .boarding-input {
+  min-height: 56px;
+}
+
+.signup-details-shell .boarding-textarea {
+  min-height: 116px;
+}
+
+.signup-details-shell .boarding-choice {
+  min-height: 52px;
+}
+
+.signup-details-shell .checkin-agent-panel {
+  margin-top: 0;
+}
+
+@media (max-width: 860px) {
+  .signup-screen {
+    padding: 14px 12px 84px;
+    place-items: start center;
+  }
+
+  .boarding-shell {
+    gap: 10px;
+  }
+
+  .boarding-topline {
+    flex-direction: row;
+    align-items: center;
+    font-size: 10px;
+  }
+
+  .boarding-back-link {
+    font-size: 12px;
+  }
+
+  .boarding-progress {
+    height: 6px;
+  }
+
+  .signup-details-shell .boarding-step-card {
+    border-radius: 22px;
+    padding: 18px;
+    gap: 14px;
+  }
+
+  .signup-details-shell .boarding-step-card::after {
+    font-size: 64px;
+    bottom: -2px;
+  }
+
+  .signup-details-shell .boarding-title {
+    font-size: clamp(28px, 8vw, 36px);
+    letter-spacing: -.055em;
+  }
+
+  .signup-details-shell .boarding-copy {
+    font-size: 13px;
+  }
+
+  .signup-details-shell .boarding-input {
+    min-height: 50px;
+    border-radius: 16px;
+    font-size: 17px;
+  }
+
+  .signup-details-shell .boarding-textarea {
+    min-height: 96px;
+    border-radius: 16px;
+  }
+
+  .signup-details-shell .boarding-choice-grid {
+    gap: 9px;
+  }
+
+  .signup-details-shell .boarding-choice {
+    min-height: 48px;
+    border-radius: 15px;
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
+  .signup-details-shell .boarding-photo-upload {
+    gap: 10px;
+  }
+
+  .signup-details-shell .boarding-photo-preview {
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    font-size: 26px;
+  }
+
+  .signup-details-shell .boarding-upload-button {
+    min-height: 44px;
+    padding: 0 15px;
+    font-size: 14px;
+  }
+
+  .signup-details-shell .boarding-upload-note,
+  .signup-details-shell .boarding-sub-question p {
+    font-size: 12px;
+  }
+
+  .signup-details-shell .boarding-sub-question {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .signup-details-shell .boarding-year-select {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .signup-details-shell .checkin-agent-panel {
+    padding: 10px 12px;
+    border-radius: 15px;
+  }
+
+  .signup-details-shell .checkin-agent-panel strong,
+  .signup-details-shell .checkin-agent-panel p {
+    font-size: 12px;
+  }
+
+  .signup-details-shell .boarding-actions {
+    gap: 8px;
+  }
+}
+
+/* Requested cleanup: no status pills/panels in the signup flow, clean final actions */
+.signup-details-shell .checkin-agent-panel,
+.signup-details-shell .checkin-experience-strip,
+.signup-details-shell .boarding-pass-preview {
+  display: none !important;
+}
+
+.ticket-showcase-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(320px, 100%);
+  margin: 0 auto;
+}
+
+.ticket-showcase-actions .button {
+  width: 100%;
+  justify-content: center;
+}
+
+.share-boarding-pass {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.share-boarding-pass:hover {
+  border-color: rgba(230,160,255,.38);
+  background: rgba(179,92,255,.10);
+}
+
+/* Signup photo ID scan screen */
+.id-scan-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(179, 92, 255, .22), transparent 34%),
+    rgba(9, 8, 11, .92);
+  backdrop-filter: blur(18px);
+  animation: idScanFadeIn .18s ease both;
+}
+
+.id-scan-card {
+  width: min(360px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  border: 1px solid rgba(230, 160, 255, .28);
+  border-radius: 30px;
+  padding: 28px 22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
+    rgba(24, 22, 28, .94);
+  box-shadow: 0 28px 90px rgba(0,0,0,.48), 0 0 44px rgba(179, 92, 255, .18);
+}
+
+.id-scan-photo-frame {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(230, 160, 255, .42);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(224,100,255,.28), transparent 58%),
+    rgba(0,0,0,.28);
+  color: rgba(247,243,255,.82);
+  font-size: 30px;
+  font-weight: 1000;
+  letter-spacing: -.06em;
+}
+
+.id-scan-line {
+  position: absolute;
+  inset-inline: 8px;
+  top: -18%;
+  height: 22px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, rgba(238, 196, 255, .92), transparent);
+  box-shadow: 0 0 22px rgba(224, 100, 255, .72);
+  animation: idScanLine 1.05s ease-in-out infinite;
+}
+
+.id-scan-card h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(34px, 9vw, 52px);
+  line-height: .9;
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+}
+
+.id-scan-card p {
+  margin: 0;
+  max-width: 280px;
+  color: rgba(247,243,255,.68);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.id-scan-loader {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.id-scan-loader span {
+  display: block;
+  height: 100%;
+  width: 42%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(179,92,255,.25), rgba(230,160,255,.95), rgba(255,94,201,.72));
+  animation: idScanLoader 1s ease-in-out infinite;
+}
+
+@keyframes idScanFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes idScanLine {
+  0% { transform: translateY(0); opacity: .35; }
+  45% { opacity: 1; }
+  100% { transform: translateY(150px); opacity: .35; }
+}
+
+@keyframes idScanLoader {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Supabase auth/profile MVP */
+
+.boarding-choice:hover {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.055);
+  color: rgba(247,243,255,.82);
+}
+
+.boarding-choice.selected,
+.boarding-choice.selected:hover {
+  border-color: rgba(230,160,255,.64);
+  background: rgba(179,92,255,.20);
+  color: #fff;
+}
+
+.id-scan-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.id-scan-photo-frame .id-scan-line {
+  z-index: 2;
+}
+
+
+.ticket-print-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+/* End moved onboarding essentials. */
+
+/* Base6 onboarding, printed boarding pass and signup passport reveal styles.
+   Moved out of globals.css during structure phase 3. */
+
+/* Standard BASE6 passport design shared across signup reveal and passport page */
+.base6-passport-cover {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(230,160,255,.32);
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(230,160,255,.22), transparent 12rem),
+    linear-gradient(145deg, rgba(49,28,68,.98), rgba(18,12,26,.99));
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 0 0 1px rgba(255,255,255,.035);
+}
+
+.base6-passport-cover::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(230,160,255,.24);
+  border-radius: max(18px, calc(1em + 10px));
+  pointer-events: none;
+}
+
+.base6-passport-cover::after {
+  content: "BASE6";
+  position: absolute;
+  right: -18px;
+  bottom: 16px;
+  color: rgba(255,255,255,.04);
+  font-size: clamp(52px, 18vw, 92px);
+  font-weight: 1000;
+  letter-spacing: -.08em;
+  pointer-events: none;
+}
+
+.base6-passport-cover__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.base6-passport-cover__country,
+.base6-passport-cover small {
+  color: rgba(247,243,255,.64);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .18em;
+}
+
+.base6-passport-cover__seal {
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(230,160,255,.44);
+  border-radius: 999px;
+  background: rgba(179,92,255,.10);
+  color: #efd7ff;
+  font-size: 38px;
+  box-shadow: 0 0 38px rgba(179,92,255,.18);
+}
+
+.base6-passport-cover strong {
+  color: #fff;
+  font-size: clamp(42px, 13vw, 72px);
+  line-height: .86;
+  font-weight: 1000;
+  letter-spacing: -.075em;
+}
+
+.base6-open-passport-spread {
+  width: 100%;
+  min-height: min(410px, 56svh);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(230,160,255,.22);
+  border-radius: 28px;
+  background:
+    linear-gradient(90deg, transparent 0 49.35%, rgba(24,18,30,.18) 49.35% 50.65%, transparent 50.65%),
+    #f7f0ff;
+  color: #17111e;
+  box-shadow: 0 30px 86px rgba(0,0,0,.46);
+}
+
+.base6-passport-id-page,
+.base6-passport-entry-page {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: clamp(14px, 3vw, 22px);
+  background:
+    repeating-linear-gradient(115deg, rgba(143,53,199,.045) 0 1px, transparent 1px 12px),
+    radial-gradient(circle at 18% 10%, rgba(179,92,255,.12), transparent 12rem),
+    linear-gradient(180deg, rgba(255,255,255,.82), rgba(242,233,250,.86));
+}
+
+.base6-passport-id-page {
+  border-right: 1px solid rgba(24,18,30,.12);
+}
+
+.base6-passport-id-page__topline,
+.base6-passport-entry-page__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: rgba(23,17,30,.58);
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.base6-passport-id-page__topline strong,
+.base6-passport-entry-page__topline strong {
+  color: #8a33d8;
+}
+
+.base6-passport-id-page__hero {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.base6-passport-id-page__photo {
+  width: 104px;
+  height: 128px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(23,17,30,.16);
+  border-radius: 18px;
+  background: rgba(179,92,255,.10);
+  color: #8a33d8;
+  font-size: 28px;
+  font-weight: 1000;
+}
+
+.base6-passport-id-page__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.base6-passport-id-page__title span,
+.base6-passport-id-page__bio span,
+.base6-passport-id-page__grid dt {
+  color: rgba(23,17,30,.50);
+  font-size: 9px;
+  font-weight: 1000;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.base6-passport-id-page__title h2 {
+  margin: 3px 0 0;
+  color: #17111e;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: .9;
+  letter-spacing: -.06em;
+  overflow-wrap: anywhere;
+}
+
+.base6-passport-id-page__title p {
+  margin: 6px 0 0;
+  color: rgba(23,17,30,.64);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.base6-passport-id-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.base6-passport-id-page__grid div,
+.base6-passport-id-page__bio,
+.base6-passport-entry-page__mini-grid span {
+  min-width: 0;
+  border: 1px solid rgba(23,17,30,.09);
+  border-radius: 12px;
+  background: rgba(255,255,255,.48);
+  padding: 9px;
+}
+
+.base6-passport-id-page__grid dd {
+  margin: 3px 0 0;
+  color: #17111e;
+  font-size: 12px;
+  font-weight: 1000;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.base6-passport-id-page__bio p {
+  margin: 4px 0 0;
+  color: rgba(23,17,30,.68);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.base6-passport-id-page__machine {
+  margin-top: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px dashed rgba(23,17,30,.18);
+  padding-top: 10px;
+  color: rgba(23,17,30,.52);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: .035em;
+}
+
+.base6-passport-entry-page {
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.base6-passport-entry-page__stamp {
+  width: min(210px, 86%);
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  border: 3px solid rgba(143,53,199,.42);
+  border-radius: 28px;
+  color: #7a28c2;
+  background: rgba(179,92,255,.06);
+  transform: rotate(-3deg);
+  text-transform: uppercase;
+}
+
+.base6-passport-entry-page__stamp span,
+.base6-passport-entry-page__stamp small {
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: .13em;
+}
+
+.base6-passport-entry-page__stamp strong {
+  font-size: clamp(30px, 7vw, 48px);
+  line-height: .88;
+  letter-spacing: -.06em;
+}
+
+.base6-passport-entry-page__copy h3 {
+  margin: 0;
+  color: #17111e;
+  font-size: 24px;
+  letter-spacing: -.045em;
+}
+
+.base6-passport-entry-page__copy p {
+  max-width: 260px;
+  margin: 6px auto 0;
+  color: rgba(23,17,30,.66);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.base6-passport-entry-page__mini-grid {
+  width: min(240px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.base6-passport-entry-page__mini-grid small,
+.base6-passport-entry-page__mini-grid strong {
+  display: block;
+}
+
+.base6-passport-entry-page__mini-grid small {
+  color: rgba(23,17,30,.48);
+  font-size: 9px;
+  font-weight: 1000;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.base6-passport-entry-page__mini-grid strong {
+  margin-top: 2px;
+  color: #17111e;
+  font-size: 18px;
+  font-weight: 1000;
+}
+
+.passport-cover-card {
+  padding: 0 !important;
+}
+
+.passport-ticket-pocket > .base6-passport-cover {
+  position: relative;
+  z-index: 3;
+  width: min(360px, 92%);
+  height: min(300px, 44svh);
+  border-radius: 30px 30px 18px 18px;
+}
+
+.passport-closed-cover > .base6-passport-cover {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.passport-open-card {
+  display: none !important;
+}
+
+.passport-directory-spread {
+  min-height: 100%;
+  box-shadow: none;
+  border: 0;
+  border-radius: 18px;
+}
+
+.passport-paper-page:has(.passport-directory-spread) {
+  padding: clamp(12px, 2.4vw, 22px);
+}
+
+@media (max-width: 520px) {
+  .base6-open-passport-spread {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    max-height: min(520px, 68svh);
+    overflow-y: auto;
+  }
+
+  .base6-passport-id-page {
+    border-right: 0;
+    border-bottom: 1px solid rgba(24,18,30,.12);
+  }
+
+  .base6-passport-id-page__hero {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .base6-passport-id-page__photo {
+    width: 88px;
+    height: 108px;
+    border-radius: 16px;
+  }
+
+  .base6-passport-id-page__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .base6-passport-id-page__grid div,
+  .base6-passport-id-page__bio,
+  .base6-passport-entry-page__mini-grid span {
+    padding: 8px;
+  }
+
+  .base6-passport-id-page__title h2 {
+    font-size: 30px;
+  }
+
+  .base6-passport-entry-page {
+    min-height: 240px;
+  }
+
+  .base6-passport-entry-page__copy p {
+    max-width: 240px;
+  }
+}
+
+/* Compact first passport page: identity only, no stamp/declaration below serial */
+.base6-open-passport-spread.passport-directory-spread,
+.base6-open-passport-spread {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.base6-passport-id-page.compact {
+  min-height: 0;
+  align-content: start;
+  gap: 14px;
+}
+
+.base6-passport-id-page__grid.compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.base6-passport-id-page__grid.compact > div {
+  min-height: 0;
+  padding: 10px;
+}
+
+.base6-passport-id-page__serial {
+  margin-top: 2px;
+  overflow: hidden;
+  border-top: 1px dashed rgba(36,27,43,.22);
+  padding-top: 12px;
+  color: rgba(36,27,43,.58);
+}
+
+.base6-passport-id-page__serial span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.base6-passport-id-page__serial strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 760px) {
+  .base6-open-passport-spread.passport-directory-spread,
+  .base6-open-passport-spread {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .base6-passport-id-page.compact {
+    gap: 11px;
+  }
+
+  .base6-passport-id-page.compact .base6-passport-id-page__hero,
+  .base6-passport-id-page.compact .passport-profile-head {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .base6-passport-id-page.compact .base6-passport-id-page__photo,
+  .base6-passport-id-page.compact .passport-photo-frame {
+    width: 92px;
+    height: 112px;
+    border-radius: 16px;
+  }
+
+  .base6-passport-id-page.compact .base6-passport-id-page__title h2,
+  .base6-passport-id-page.compact .passport-profile-title h1 {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  .base6-passport-id-page__grid.compact {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .base6-passport-id-page__grid.compact dt,
+  .base6-passport-id-page__grid.compact span {
+    font-size: 9px;
+  }
+
+  .base6-passport-id-page__grid.compact dd,
+  .base6-passport-id-page__grid.compact strong {
+    font-size: 12px;
+  }
+}
+
+
+/* --- Physical document reset: boarding pass print + passport handoff --- */
+.signup-phase-ticket,
+.signup-phase-showcase {
+  overflow: hidden !important;
+}
+
+.signup-phase-ticket .base6-ticket-stage {
+  --print-scene-w: min(390px, calc(100vw - 24px));
+  --printer-h: clamp(92px, 13svh, 112px);
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100svh !important;
+  min-height: 100svh !important;
+  overflow: hidden !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-content: start !important;
+  padding: max(12px, env(safe-area-inset-top)) 0 max(12px, env(safe-area-inset-bottom)) !important;
+  background:
+    radial-gradient(circle at 50% 4%, rgba(201, 77, 255, .16), transparent 26rem),
+    linear-gradient(180deg, #050506 0%, #0b0710 50%, #120814 100%) !important;
+  overscroll-behavior: none !important;
+}
+
+.signup-phase-ticket .printer-slot {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 30 !important;
+  width: var(--print-scene-w) !important;
+  height: var(--printer-h) !important;
+  transform: none !important;
+  border-radius: 14px 14px 30px 30px !important;
+}
+
+.printed-document {
+  --paper-w: min(340px, calc(100vw - 56px));
+  --paper-h: min(590px, calc(100svh - var(--printer-h) - 98px - env(safe-area-inset-bottom)));
+  position: relative !important;
+  z-index: 20 !important;
+  width: var(--paper-w) !important;
+  height: var(--paper-h) !important;
+  min-height: 448px !important;
+  margin-top: -1px !important;
+  overflow: hidden !important;
+  border-radius: 0 0 26px 26px !important;
+  background:
+    repeating-linear-gradient(115deg, rgba(179,92,255,.045) 0 1px, transparent 1px 12px),
+    #faf8ff !important;
+  box-shadow: 0 36px 84px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.10) !important;
+  touch-action: none !important;
+  cursor: grab !important;
+  transform-origin: top center !important;
+  animation: physicalPaperPrint 3.05s cubic-bezier(.14,.78,.16,1) both !important;
+}
+
+.printed-document.is-tearing {
+  animation: none !important;
+  transform: translateX(calc(min(var(--tear-progress), 100%) * .62)) rotate(.85deg) !important;
+}
+
+.printed-document__tear {
+  position: relative;
+  z-index: 5;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #6433bf;
+  background: rgba(255,255,255,.90);
+  border-bottom: 2px dotted rgba(21,17,28,.42);
+  box-shadow: 0 6px 12px rgba(0,0,0,.08);
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  font-size: 10px;
+  font-weight: 1000;
+}
+
+.printed-document__tear-pulse {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, #fff 0 22%, #f06eff 36%, rgba(188,74,255,.85) 58%, rgba(188,74,255,0) 100%);
+  box-shadow: 0 0 0 6px rgba(222,102,255,.16), 0 0 28px rgba(222,102,255,.82);
+  animation: tearStartPulse 1.3s ease-in-out infinite;
+}
+
+.printed-document__tear-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.printed-document__pass {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 36px;
+  bottom: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.printed-document .base6-pass-frame--print {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  border-radius: 0 0 24px 24px !important;
+  box-shadow: none !important;
+}
+
+.printed-document .base6-pass-frame--print .base6-pass-art {
+  width: 650px !important;
+  height: 318px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.88) !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+}
+
+.base6-print-copy {
+  position: relative !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 25 !important;
+  width: var(--print-scene-w) !important;
+  display: grid !important;
+  justify-items: center !important;
+  text-align: center !important;
+  gap: 5px !important;
+  margin-top: 14px !important;
+  padding-inline: 18px !important;
+  pointer-events: none !important;
+}
+
+.base6-print-copy span,
+.base6-print-copy strong {
+  text-align: center !important;
+}
+
+.base6-print-copy strong {
+  max-width: 100%;
+  font-size: clamp(13px, 3.65vw, 16px) !important;
+  line-height: 1.12 !important;
+}
+
+/* Hide legacy floating tear overlay when older markup/classes are present. */
+.base6-print-pass,
+.base6-pass-tearline {
+  pointer-events: none;
+}
+
+@keyframes physicalPaperPrint {
+  0% {
+    clip-path: inset(0 0 100% 0 round 0 0 26px 26px);
+    filter: blur(.7px);
+  }
+  8% {
+    clip-path: inset(0 0 92% 0 round 0 0 26px 26px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0 round 0 0 26px 26px);
+    filter: blur(0);
+  }
+}
+
+@keyframes tearStartPulse {
+  0%, 100% { opacity: .9; transform: translateY(-50%) scale(1); }
+  50% { opacity: 1; transform: translateY(-50%) scale(1.18); }
+}
+
+/* Keep the shared boarding pass design identical; only orientation/scale changes by variant. */
+.base6-pass-frame--horizontal .base6-pass-art {
+  transform: none !important;
+}
+
+.passport-flat-ticket .base6-pass-frame--horizontal {
+  width: min(344px, 100%) !important;
+  transform: none !important;
+  transform-origin: top center !important;
+}
+
+.passport-flat-ticket .base6-pass-frame--horizontal .base6-pass-art {
+  box-shadow: 0 18px 42px rgba(0,0,0,.30);
+}
+
+/* Physical passport handoff: solid passport with the same boarding pass peeking out. */
+.signup-phase-showcase .base6-ticket-stage {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100svh !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: start center !important;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) !important;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(201,77,255,.14), transparent 25rem),
+    linear-gradient(180deg, #070509 0%, #120816 100%) !important;
+}
+
+.passport-reveal-scene {
+  width: min(390px, calc(100vw - 24px)) !important;
+  min-height: auto !important;
+  height: auto !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+  justify-items: center !important;
+  gap: 12px !important;
+  padding-top: 0 !important;
+  transform: translateY(0) !important;
+}
+
+.passport-ticket-pocket {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: grid !important;
+  place-items: start center !important;
+}
+
+.passport-document-stack {
+  width: min(360px, 100%) !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-items: start !important;
+  padding-top: 4px !important;
+  animation: documentsHandedDown .62s cubic-bezier(.16,.84,.22,1) both !important;
+}
+
+.passport-document-stack__ticket {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(250px, 68vw) !important;
+  height: 96px !important;
+  overflow: hidden !important;
+  display: grid !important;
+  justify-items: center !important;
+  pointer-events: none !important;
+}
+
+.passport-document-stack__ticket .base6-pass-frame--vertical {
+  position: relative !important;
+  top: auto !important;
+  width: min(250px, 68vw) !important;
+  height: 372px !important;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+.passport-document-stack__ticket .base6-pass-frame--vertical .base6-pass-art {
+  width: 650px !important;
+  height: 318px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.78) !important;
+  box-shadow: none !important;
+}
+
+.passport-document-stack__cover {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(350px, 100%) !important;
+  height: min(510px, calc(100svh - 176px)) !important;
+  min-height: 430px !important;
+  margin-top: -18px !important;
+  overflow: hidden !important;
+  border-radius: 30px !important;
+  background: #1a1025 !important;
+  box-shadow: 0 28px 78px rgba(0,0,0,.50) !important;
+}
+
+.passport-document-stack__cover .base6-passport-cover {
+  opacity: 1 !important;
+  background: linear-gradient(145deg, #321b48 0%, #170d22 100%) !important;
+  box-shadow: none !important;
+}
+
+.passport-document-stack__cover .base6-passport-cover__inner {
+  opacity: 1 !important;
+}
+
+.open-passport-cta {
+  width: min(300px, 100%) !important;
+  min-height: 50px !important;
+  margin-top: 0 !important;
+}
+
+.open-passport-layout {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+  gap: 12px !important;
+  animation: passportOpenReveal .48s ease both !important;
+}
+
+.open-passport-layout .base6-open-passport-spread {
+  display: grid !important;
+  justify-items: center !important;
+}
+
+.open-passport-layout .base6-passport-id-page {
+  width: min(360px, 100%) !important;
+  box-shadow: 0 24px 62px rgba(0,0,0,.36) !important;
+}
+
+.passport-flat-ticket {
+  display: grid !important;
+  justify-items: center !important;
+  margin-top: 0 !important;
+}
+
+.enter-lounge-cta {
+  width: min(300px, 100%) !important;
+  min-height: 50px !important;
+  margin-top: 0 !important;
+}
+
+@keyframes documentsHandedDown {
+  0% { opacity: 0; transform: translateY(-22px) scale(.985); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 420px) {
+  .signup-phase-ticket .base6-ticket-stage {
+    --print-scene-w: min(382px, calc(100vw - 16px));
+    --printer-h: clamp(88px, 13svh, 104px);
+  }
+
+  .printed-document {
+    --paper-w: min(330px, calc(100vw - 52px));
+    --paper-h: min(570px, calc(100svh - var(--printer-h) - 94px - env(safe-area-inset-bottom)));
+  }
+
+  .printed-document .base6-pass-frame--print .base6-pass-art {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.84) !important;
+  }
+
+  .passport-document-stack__cover {
+    height: min(500px, calc(100svh - 166px)) !important;
+    min-height: 410px !important;
+  }
+
+  .passport-document-stack__ticket {
+    height: 90px !important;
+  }
+
+  .passport-document-stack__ticket .base6-pass-frame--vertical {
+    height: 350px !important;
+  }
+
+  .passport-document-stack__ticket .base6-pass-frame--vertical .base6-pass-art {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.74) !important;
+  }
+}
+
+@media (max-height: 740px) {
+  .printed-document {
+    --paper-h: min(520px, calc(100svh - var(--printer-h) - 86px - env(safe-area-inset-bottom)));
+    min-height: 390px !important;
+  }
+
+  .printed-document .base6-pass-frame--print .base6-pass-art {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.78) !important;
+  }
+
+  .passport-document-stack__cover {
+    height: min(438px, calc(100svh - 156px)) !important;
+    min-height: 360px !important;
+  }
+}
+
+/* BASE6 onboarding reset: one real boarding pass object, wrappers only rotate/scale/crop it. */
+.one-boarding-pass {
+  width: 640px;
+  height: 278px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 60px minmax(0, 1fr) 38px;
+  border: 1px solid rgba(21,17,28,.13);
+  border-radius: 22px;
+  background:
+    repeating-linear-gradient(115deg, rgba(179,92,255,.045) 0 1px, transparent 1px 12px),
+    linear-gradient(180deg, rgba(255,255,255,.99), rgba(243,239,248,.99));
+  color: #15111c;
+  box-shadow: 0 24px 70px rgba(0,0,0,.36);
+  isolation: isolate;
+}
+
+.one-pass-header,
+.one-pass-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 18px;
+  color: #fff;
+  background: linear-gradient(135deg, #7427d9 0%, #cc48f0 48%, #f35ccf 100%);
+  text-transform: uppercase;
+}
+
+.one-pass-header strong,
+.one-pass-header span {
+  display: block;
+  white-space: nowrap;
+}
+
+.one-pass-header strong {
+  font-size: 22px;
+  line-height: .9;
+  letter-spacing: -.04em;
+}
+
+.one-pass-header span {
+  margin-top: 3px;
+  font-size: 8px;
+  font-weight: 1000;
+  letter-spacing: .02em;
+  opacity: .9;
+}
+
+.one-pass-body {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 112px;
+  grid-template-areas:
+    "barcode passenger stub"
+    "barcode route stub"
+    "barcode fields stub";
+  gap: 9px 13px;
+  align-items: start;
+  padding: 13px 15px;
+}
+
+.one-pass-barcode {
+  grid-area: barcode;
+  align-self: stretch;
+  min-height: 106px;
+  border-radius: 8px;
+  background: repeating-linear-gradient(90deg, #050506 0 4px, transparent 4px 7px, #050506 7px 11px, transparent 11px 15px);
+}
+
+.one-pass-passenger {
+  grid-area: passenger;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.one-pass-passenger span,
+.one-pass-route span,
+.one-pass-fields small,
+.one-pass-stub span {
+  color: rgba(21,17,28,.48);
+  font-size: 8px;
+  font-weight: 1000;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.one-pass-passenger strong {
+  color: #15111c;
+  font-size: 20px;
+  line-height: .95;
+  letter-spacing: -.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.one-pass-passenger small,
+.one-pass-stub small {
+  color: rgba(21,17,28,.68);
+  font-size: 9px;
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.one-pass-route {
+  grid-area: route;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.one-pass-route div,
+.one-pass-fields span {
+  min-width: 0;
+  border: 1px solid rgba(21,17,28,.07);
+  border-radius: 8px;
+  background: rgba(255,255,255,.52);
+  padding: 7px;
+}
+
+.one-pass-route strong,
+.one-pass-fields strong,
+.one-pass-stub strong {
+  display: block;
+  color: #15111c;
+  font-size: 12px;
+  line-height: 1.02;
+  font-weight: 1000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.one-pass-fields {
+  grid-area: fields;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.one-pass-stub {
+  grid-area: stub;
+  align-self: stretch;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px;
+  border-left: 2px dotted rgba(21,17,28,.20);
+  text-align: center;
+}
+
+.one-pass-stub strong {
+  font-size: 20px;
+}
+
+.one-pass-footer {
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 16px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: .03em;
+  text-align: center;
+}
+
+/* Printer: portrait feed is the same landscape pass rotated 90 degrees. */
+.signup-phase-ticket .base6-ticket-stage {
+  --print-scene-w: min(390px, calc(100vw - 20px));
+  --printer-h: clamp(76px, 12svh, 98px);
+  display: grid !important;
+  grid-template-rows: var(--printer-h) auto auto !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 0 !important;
+  padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)) !important;
+  overflow: hidden !important;
+}
+
+.signup-phase-ticket .printer-slot {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: var(--print-scene-w) !important;
+  height: var(--printer-h) !important;
+  transform: none !important;
+}
+
+.printed-document {
+  --rotated-pass-w: 164px;
+  --rotated-pass-h: 378px;
+  position: relative !important;
+  width: calc(var(--rotated-pass-w) + 24px) !important;
+  height: calc(var(--rotated-pass-h) + 52px) !important;
+  min-height: 0 !important;
+  margin-top: -1px !important;
+  overflow: hidden !important;
+  border-radius: 0 0 24px 24px !important;
+  background: linear-gradient(180deg, rgba(250,248,255,.98), rgba(236,231,244,.98)) !important;
+  box-shadow: 0 36px 84px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.10) !important;
+  touch-action: none !important;
+  cursor: grab !important;
+  animation: physicalPaperPrint 2.65s cubic-bezier(.14,.78,.16,1) both !important;
+}
+
+.printed-document.is-tearing {
+  animation: none !important;
+  transform: translateX(calc(min(var(--tear-progress), 100%) * .62)) rotate(.85deg) !important;
+}
+
+.printed-document__tear {
+  height: 40px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.printed-document__pass {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 40px !important;
+  bottom: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.printed-document__pass .one-boarding-pass {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.59) !important;
+  transform-origin: center !important;
+  box-shadow: none !important;
+}
+
+/* Closed passport: same rotated ticket, physically tucked behind the cover. */
+.signup-phase-showcase .base6-ticket-stage {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: max(14px, env(safe-area-inset-top)) 12px max(14px, env(safe-area-inset-bottom)) !important;
+}
+
+.passport-reveal-scene {
+  width: min(390px, calc(100vw - 24px)) !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 12px !important;
+  overflow: visible !important;
+}
+
+.passport-ticket-pocket,
+.passport-document-stack {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  overflow: visible !important;
+}
+
+.passport-document-stack {
+  padding-top: 0 !important;
+}
+
+.passport-document-stack__ticket {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 178px !important;
+  height: 106px !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+  pointer-events: none !important;
+}
+
+.passport-document-stack__ticket .one-boarding-pass {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.58) !important;
+  transform-origin: center !important;
+  box-shadow: none !important;
+}
+
+.passport-document-stack__cover {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(350px, 100%) !important;
+  height: min(500px, calc(100svh - 180px)) !important;
+  min-height: 400px !important;
+  margin-top: -28px !important;
+  overflow: hidden !important;
+  border-radius: 30px !important;
+}
+
+/* Open passport: same object flipped back to landscape and scaled to mobile width. */
+.open-passport-layout {
+  width: min(370px, 100%) !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 12px !important;
+  overflow: visible !important;
+}
+
+.open-passport-layout .base6-open-passport-spread,
+.open-passport-layout .base6-passport-id-page {
+  width: min(360px, 100%) !important;
+  max-width: 100% !important;
+}
+
+.passport-flat-ticket {
+  width: 100% !important;
+  display: grid !important;
+  justify-items: center !important;
+  overflow: visible !important;
+  margin-top: 0 !important;
+}
+
+.passport-flat-ticket .one-boarding-pass {
+  transform: scale(.53) !important;
+  transform-origin: top center !important;
+  margin-bottom: -128px !important;
+}
+
+.boarding-photo-actions {
+  display: flex;
+  width: 100%;
+}
+
+.boarding-skip-button {
+  border: 0;
+  background: transparent;
+  color: rgba(247,243,255,.72);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.boarding-skip-button:hover {
+  color: #fff;
+}
+
+@media (max-width: 420px) {
+  .printed-document {
+    --rotated-pass-w: 156px;
+    --rotated-pass-h: 360px;
+  }
+
+  .printed-document__pass .one-boarding-pass {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.56) !important;
+  }
+
+  .passport-document-stack__ticket .one-boarding-pass {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.55) !important;
+  }
+
+  .passport-flat-ticket .one-boarding-pass {
+    transform: scale(.515) !important;
+    margin-bottom: -132px !important;
+  }
+}
+
+@media (max-height: 740px) {
+  .printed-document {
+    --rotated-pass-w: 146px;
+    --rotated-pass-h: 336px;
+  }
+
+  .printed-document__pass .one-boarding-pass {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.525) !important;
+  }
+
+  .passport-document-stack__cover {
+    height: min(430px, calc(100svh - 160px)) !important;
+    min-height: 350px !important;
+  }
+}
+
+/* BASE6 onboarding final layout lock: keep the one pass, fix only placement/clipping. */
+.signup-phase-showcase .base6-ticket-stage {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  place-items: start center !important;
+  padding: max(16px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom)) !important;
+}
+
+.passport-reveal-scene,
+.passport-reveal-scene.passport-is-open {
+  width: min(370px, calc(100vw - 28px)) !important;
+  max-width: min(370px, calc(100vw - 28px)) !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  justify-items: center !important;
+  align-content: start !important;
+}
+
+/* Closed passport: lower the same rotated ticket and reveal it as a tucked physical strip. */
+.passport-document-stack {
+  width: min(360px, 100%) !important;
+  padding-top: 24px !important;
+  justify-items: center !important;
+  overflow: visible !important;
+}
+
+.passport-document-stack__ticket {
+  width: 176px !important;
+  height: 118px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+  z-index: 1 !important;
+}
+
+.passport-document-stack__ticket .one-boarding-pass {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.55) !important;
+  transform-origin: center !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+.passport-document-stack__cover {
+  width: min(350px, 100%) !important;
+  margin-top: -42px !important;
+  z-index: 2 !important;
+}
+
+/* Open passport: normal document flow, no sideways clipping, no transform layout overflow. */
+.passport-reveal-scene.passport-is-open .open-passport-layout {
+  width: 100% !important;
+  max-width: 370px !important;
+  min-width: 0 !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 14px !important;
+  overflow: visible !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+
+.passport-reveal-scene.passport-is-open .base6-open-passport-spread {
+  width: min(360px, 100%) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  justify-items: stretch !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+.passport-reveal-scene.passport-is-open .base6-passport-id-page,
+.passport-reveal-scene.passport-is-open .base6-passport-id-page.compact {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+.passport-reveal-scene.passport-is-open .base6-passport-id-page__hero {
+  grid-template-columns: 92px minmax(0, 1fr) !important;
+}
+
+.passport-reveal-scene.passport-is-open .base6-passport-id-page__title,
+.passport-reveal-scene.passport-is-open .base6-passport-id-page__grid,
+.passport-reveal-scene.passport-is-open .base6-passport-id-page__serial {
+  min-width: 0 !important;
+}
+
+.passport-reveal-scene.passport-is-open .passport-flat-ticket {
+  position: relative !important;
+  width: min(340px, calc(100vw - 48px)) !important;
+  height: 148px !important;
+  margin: 2px auto 0 !important;
+  overflow: visible !important;
+  display: block !important;
+  justify-self: center !important;
+}
+
+.passport-reveal-scene.passport-is-open .passport-flat-ticket .one-boarding-pass {
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) scale(.53) !important;
+  transform-origin: top center !important;
+  margin: 0 !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.30) !important;
+}
+
+.passport-reveal-scene.passport-is-open .enter-lounge-cta {
+  width: min(324px, 100%) !important;
+  justify-self: center !important;
+  margin: 0 auto !important;
+}
+
+@media (max-width: 420px) {
+  .passport-document-stack { padding-top: 28px !important; }
+  .passport-document-stack__ticket { width: 168px !important; height: 116px !important; }
+  .passport-document-stack__ticket .one-boarding-pass {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.53) !important;
+  }
+  .passport-reveal-scene.passport-is-open .passport-flat-ticket {
+    width: min(330px, calc(100vw - 52px)) !important;
+    height: 144px !important;
+  }
+  .passport-reveal-scene.passport-is-open .passport-flat-ticket .one-boarding-pass {
+    transform: translateX(-50%) scale(.515) !important;
+  }
+}
+
+/* BASE6 onboarding: slow, deliberate fade for the closed passport handoff. */
+@keyframes base6ClosedPassportFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(.985);
+    filter: blur(8px);
+  }
+  55% {
+    opacity: .72;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.signup-phase-showcase .passport-reveal-scene:not(.passport-is-open).ready {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  animation: base6ClosedPassportFadeIn 1.15s cubic-bezier(.16,.84,.22,1) .12s both !important;
+}
+
+.signup-phase-showcase .passport-reveal-scene:not(.passport-is-open).ready .passport-document-stack {
+  animation-duration: 1.05s !important;
+  animation-delay: .16s !important;
+}
+
+/* BASE6 onboarding handoff fix: no paper backing, correct ticket crop, staged handoff. */
+.signup-phase-ticket .printed-document {
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: calc(var(--rotated-pass-h) + 44px) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+.signup-phase-ticket .printed-document__tear {
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  border-radius: 18px 18px 0 0 !important;
+  background: rgba(250, 248, 255, .94) !important;
+  box-shadow: 0 12px 24px rgba(0,0,0,.22) !important;
+}
+
+.signup-phase-ticket .printed-document__pass {
+  top: 40px !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: var(--rotated-pass-h) !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+.signup-phase-ticket .printed-document__pass .one-boarding-pass {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.59) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.36) !important;
+}
+
+/* Closed passport: the passport arrives first, then the same rotated ticket slides down into it. */
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack {
+  position: relative !important;
+  width: min(360px, 100%) !important;
+  padding-top: 34px !important;
+  animation: none !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__cover {
+  animation: passportCoverHandedIn .82s cubic-bezier(.16,.84,.22,1) .12s both !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 178px !important;
+  height: 128px !important;
+  margin-bottom: -48px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: passportTicketSlidesIntoPocket .92s cubic-bezier(.16,.84,.22,1) .48s both !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket .one-boarding-pass {
+  position: absolute !important;
+  top: calc(50% + 42px) !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.55) !important;
+  transform-origin: center !important;
+  margin: 0 !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.30) !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__cover {
+  position: relative !important;
+  z-index: 4 !important;
+  margin-top: 0 !important;
+}
+
+@keyframes passportCoverHandedIn {
+  from { opacity: 0; transform: translateY(42px) scale(.975); filter: blur(7px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes passportTicketSlidesIntoPocket {
+  0% { opacity: 0; transform: translateY(-46px) scale(.985); filter: blur(5px); }
+  52% { opacity: 1; transform: translateY(10px) scale(1); filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@media (max-width: 420px) {
+  .signup-phase-ticket .printed-document__pass .one-boarding-pass {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.56) !important;
+  }
+
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack {
+    padding-top: 32px !important;
+  }
+
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket {
+    width: 170px !important;
+    height: 124px !important;
+    margin-bottom: -46px !important;
+  }
+
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket .one-boarding-pass {
+    top: calc(50% + 40px) !important;
+    transform: translate(-50%, -50%) rotate(90deg) scale(.53) !important;
+  }
+}
+
+/* BASE6 closed passport crop nudge: reveal the recognisable start of the rotated pass header. */
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack {
+  padding-top: 42px !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket {
+  width: 188px !important;
+  height: 136px !important;
+  margin-bottom: -54px !important;
+}
+
+.passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket .one-boarding-pass {
+  top: calc(50% + 92px) !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.53) !important;
+}
+
+@media (max-width: 420px) {
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack {
+    padding-top: 40px !important;
+  }
+
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket {
+    width: 184px !important;
+    height: 132px !important;
+    margin-bottom: -52px !important;
+  }
+
+  .passport-reveal-scene:not(.passport-is-open) .passport-document-stack__ticket .one-boarding-pass {
+    top: calc(50% + 88px) !important;
+    transform: translate(-50%, -50%) rotate(90deg) scale(.52) !important;
+  }
+}
+
+/* BASE6 share boarding pass action: keep this light and secondary to the physical ticket/passport moment. */
+.boarding-pass-share-panel {
+  width: min(340px, calc(100vw - 48px)) !important;
+  margin: 8px auto 14px !important;
+  display: grid !important;
+  gap: 7px !important;
+  justify-items: center !important;
+  text-align: center !important;
+}
+
+.boarding-pass-share-panel .share-boarding-pass-cta {
+  width: 100% !important;
+  min-height: 48px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(228, 78, 238, .54) !important;
+  background: rgba(228, 78, 238, .10) !important;
+  color: #fff !important;
+  box-shadow: 0 0 26px rgba(193, 52, 234, .16) !important;
+}
+
+.boarding-pass-share-panel p {
+  margin: 0 !important;
+  color: rgba(255,255,255,.70) !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+}
+
+.boarding-pass-share-panel span {
+  display: block !important;
+  min-height: 1em !important;
+  color: rgba(255,255,255,.86) !important;
+  font-size: .72rem !important;
+  line-height: 1.25 !important;
+  letter-spacing: .04em !important;
+  text-transform: uppercase !important;
+}
+
+.passport-reveal-scene.passport-is-open .boarding-pass-share-panel {
+  animation: passportOpenElementRise .62s cubic-bezier(.16,.84,.22,1) .22s both !important;
+}
+
+/* BASE6 seat assignment moment between account issue and ticket rip */
+.signup-phase-assigned {
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.seat-assignment-shell {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+.seat-assignment-card {
+  align-self: center;
+  width: min(520px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  text-align: center;
+  animation: seatAssignmentIn .52s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.seat-assignment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 8px 0 0;
+}
+
+.seat-assignment-block {
+  min-height: 148px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025)),
+    rgba(9, 9, 13, .72);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 28px 70px rgba(0,0,0,.28);
+}
+
+.seat-assignment-block span {
+  color: rgba(255,255,255,.46);
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.seat-assignment-block strong {
+  color: #fff;
+  font-size: clamp(46px, 14vw, 82px);
+  line-height: .9;
+  letter-spacing: -.08em;
+}
+
+.seat-assignment-meta {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  color: rgba(255,255,255,.62);
+}
+
+.seat-assignment-meta span,
+.seat-assignment-meta small {
+  color: rgba(255,255,255,.48);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.seat-assignment-meta strong {
+  color: #fff;
+  font-size: 15px;
+}
+
+.seat-assignment-bottom {
+  position: sticky;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  width: min(520px, 100%);
+  margin: 0 auto;
+  display: grid;
+}
+
+.seat-assignment-bottom .button {
+  width: 100%;
+  min-height: 54px;
+}
+
+@keyframes seatAssignmentIn {
+  from { opacity: 0; transform: translateY(18px) scale(.98); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@media (max-width: 520px) {
+  .seat-assignment-grid { gap: 10px; }
+  .seat-assignment-block { min-height: 132px; border-radius: 20px; }
+  .seat-assignment-block strong { font-size: clamp(42px, 18vw, 70px); }
+}
+
+/* BASE6 physical ticket tear: printer feed stays fixed, boarding pass tears away from the perforation. */
+.signup-phase-ticket .printed-document {
+  height: calc(var(--rotated-pass-h) + 62px) !important;
+  transform: none !important;
+  cursor: grab !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing,
+.signup-phase-ticket .printed-document.is-torn {
+  animation: none !important;
+  transform: none !important;
+  cursor: grabbing !important;
+}
+
+.signup-phase-ticket .printed-document__fixed-feed {
+  position: relative !important;
+  z-index: 6 !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: 26px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 0 !important;
+  background:
+    repeating-linear-gradient(90deg, rgba(21,17,28,.08) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(235,229,243,.96)) !important;
+  border-bottom: 1px solid rgba(21,17,28,.12) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,.16) !important;
+}
+
+.signup-phase-ticket .printed-document__feed-label {
+  color: rgba(21,17,28,.46) !important;
+  font-size: 8px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .18em !important;
+  text-transform: uppercase !important;
+}
+
+.signup-phase-ticket .printed-document__tear {
+  position: relative !important;
+  z-index: 8 !important;
+  height: 36px !important;
+  border-radius: 0 0 16px 16px !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(21,17,28,.42) 0 8px, transparent 8px 15px) center / 15px 2px no-repeat,
+    rgba(250, 248, 255, .96) !important;
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.20),
+    inset 0 -1px 0 rgba(21,17,28,.16) !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before,
+.signup-phase-ticket .printed-document__tear::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: -8px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 999px !important;
+  background: #07050a !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before { left: -8px !important; }
+.signup-phase-ticket .printed-document__tear::after { right: -8px !important; }
+
+.signup-phase-ticket .printed-document__tear-copy {
+  transform: translateY(-1px) !important;
+}
+
+.signup-phase-ticket .printed-document__pass {
+  top: 62px !important;
+  z-index: 4 !important;
+  transform:
+    translateX(calc(-50% + min(var(--tear-progress), 100%) * .7))
+    translateY(var(--tear-drop))
+    rotate(var(--tear-rotation)) !important;
+  transform-origin: 50% 0 !important;
+  transition: transform .18s cubic-bezier(.18,.8,.18,1), filter .18s ease, opacity .18s ease !important;
+  will-change: transform !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing .printed-document__pass {
+  transition: none !important;
+  filter: drop-shadow(-10px 20px 24px rgba(0,0,0,.26)) !important;
+}
+
+.signup-phase-ticket .printed-document.is-torn .printed-document__pass {
+  transform: translateX(calc(-50% + 92vw)) translateY(18px) rotate(5deg) !important;
+  opacity: .98 !important;
+  filter: drop-shadow(-18px 28px 34px rgba(0,0,0,.30)) !important;
+  transition: transform .36s cubic-bezier(.2,.82,.2,1), opacity .36s ease !important;
+}
+
+.signup-phase-ticket .printed-document__ripped-edge {
+  position: absolute !important;
+  left: 50% !important;
+  top: -7px !important;
+  z-index: 6 !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: 16px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  opacity: .92 !important;
+  background:
+    linear-gradient(135deg, transparent 0 8px, rgba(250,248,255,.98) 8px 15px, transparent 15px 22px) 0 0 / 22px 16px repeat-x !important;
+  filter: drop-shadow(0 -1px 0 rgba(21,17,28,.20)) !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing .printed-document__tear {
+  background:
+    linear-gradient(90deg, rgba(100,51,191,.74) 0 8px, transparent 8px 15px) center / 15px 2px no-repeat,
+    rgba(250, 248, 255, .98) !important;
+}
+
+.signup-phase-ticket .printed-document.is-torn .printed-document__tear-pulse,
+.signup-phase-ticket .printed-document.is-torn .printed-document__tear-copy {
+  opacity: 0 !important;
+}
+
+/* BASE6 onboarding polish: centre photo ID controls, tighten assigned-seat moment, and add print action. */
+.signup-details-shell .boarding-photo-upload {
+  justify-items: center !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+
+.signup-details-shell .boarding-photo-actions {
+  justify-content: center !important;
+}
+
+.signup-details-shell .boarding-upload-button,
+.signup-details-shell .boarding-skip-button {
+  justify-self: center !important;
+}
+
+.boarding-pass-action-row {
+  width: 100% !important;
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.boarding-pass-share-panel .share-boarding-pass-cta,
+.boarding-pass-share-panel .print-boarding-pass-cta {
+  width: 100% !important;
+  min-height: 48px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(228, 78, 238, .54) !important;
+  background: rgba(228, 78, 238, .10) !important;
+  color: #fff !important;
+  box-shadow: 0 0 26px rgba(193, 52, 234, .16) !important;
+}
+
+.boarding-pass-share-panel .print-boarding-pass-cta {
+  background: rgba(255,255,255,.045) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 520px) {
+  .seat-assignment-shell {
+    gap: 8px !important;
+    padding-top: 10px !important;
+    padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .seat-assignment-card {
+    width: min(360px, 100%) !important;
+    gap: 10px !important;
+    align-self: start !important;
+    padding-top: 2px !important;
+  }
+
+  .seat-assignment-card .eyebrow {
+    font-size: 11px !important;
+    letter-spacing: .16em !important;
+  }
+
+  .seat-assignment-card .boarding-title {
+    font-size: clamp(38px, 14vw, 56px) !important;
+    line-height: .86 !important;
+    letter-spacing: -.075em !important;
+    max-width: 350px !important;
+    margin-inline: auto !important;
+  }
+
+  .seat-assignment-card .boarding-copy {
+    max-width: 310px !important;
+    margin-inline: auto !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+
+  .seat-assignment-grid {
+    gap: 8px !important;
+    margin-top: 2px !important;
+  }
+
+  .seat-assignment-block {
+    min-height: 104px !important;
+    border-radius: 18px !important;
+    gap: 6px !important;
+  }
+
+  .seat-assignment-block span {
+    font-size: 9px !important;
+    letter-spacing: .18em !important;
+  }
+
+  .seat-assignment-block strong {
+    font-size: clamp(44px, 17vw, 62px) !important;
+    line-height: .86 !important;
+  }
+
+  .seat-assignment-meta {
+    gap: 2px !important;
+  }
+
+  .seat-assignment-meta span,
+  .seat-assignment-meta small {
+    font-size: 9px !important;
+    letter-spacing: .12em !important;
+  }
+
+  .seat-assignment-meta strong {
+    font-size: 14px !important;
+  }
+
+  .seat-assignment-bottom {
+    bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    width: min(360px, 100%) !important;
+  }
+
+  .seat-assignment-bottom .button {
+    min-height: 50px !important;
+  }
+}
+
+@media (max-width: 390px), (max-height: 760px) {
+  .seat-assignment-card .boarding-title {
+    font-size: clamp(34px, 12vw, 48px) !important;
+  }
+
+  .seat-assignment-block {
+    min-height: 92px !important;
+  }
+
+  .seat-assignment-block strong {
+    font-size: clamp(38px, 15vw, 54px) !important;
+  }
+
+  .seat-assignment-card .boarding-copy {
+    font-size: 12px !important;
+  }
+}
+
+/* ============================================================
+   PHASE 3 REPAIR: restore physical boarding flow after structure split
+   Final correction: the print scene feeds a portrait/vertical boarding pass.
+   ============================================================ */
+.signup-phase-ticket .base6-ticket-stage {
+  --print-pass-w: min(292px, calc(100vw - 56px));
+  --print-pass-h: min(620px, calc(100svh - 230px));
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 10px !important;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(20px, env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.signup-phase-ticket .printer-slot {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(500px, calc(100vw - 24px)) !important;
+  height: clamp(72px, 12svh, 104px) !important;
+  transform: none !important;
+  border-radius: 22px !important;
+  margin: 0 auto -14px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.025)),
+    rgba(11,10,15,.98) !important;
+  box-shadow:
+    0 22px 70px rgba(0,0,0,.62),
+    inset 0 -18px 26px rgba(0,0,0,.44),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+.signup-phase-ticket .printer-slot::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 13px !important;
+  width: min(300px, 70vw) !important;
+  height: 10px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 999px !important;
+  background: #030304 !important;
+  box-shadow:
+    inset 0 1px 7px rgba(255,255,255,.08),
+    0 0 24px rgba(179,92,255,.24) !important;
+}
+
+.signup-phase-ticket .printer-slot span {
+  display: block !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 17px !important;
+  width: min(230px, 56vw) !important;
+  height: 5px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(179,92,255,.18), rgba(224,100,255,.92), rgba(255,139,216,.72), rgba(179,92,255,.18)) !important;
+  box-shadow: 0 0 22px rgba(224,100,255,.42) !important;
+}
+
+.signup-phase-ticket .printed-document {
+  position: relative !important;
+  width: var(--print-pass-w) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  display: grid !important;
+  grid-template-rows: 42px auto !important;
+  gap: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: repairTicketFeedDown .86s cubic-bezier(.16,.84,.22,1) both !important;
+  cursor: grab !important;
+  touch-action: pan-y !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing,
+.signup-phase-ticket .printed-document.is-torn {
+  animation: none !important;
+  transform: none !important;
+}
+
+.signup-phase-ticket .printed-document__fixed-feed {
+  position: absolute !important;
+  left: 50% !important;
+  top: -18px !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  height: 24px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 0 0 16px 16px !important;
+  background: rgba(245, 239, 253, .96) !important;
+  box-shadow: 0 14px 32px rgba(0,0,0,.28) !important;
+  overflow: hidden !important;
+}
+
+.signup-phase-ticket .printed-document__feed-label {
+  display: none !important;
+}
+
+.signup-phase-ticket .printed-document__tear {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  height: 42px !important;
+  margin: 0 auto -1px !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border-radius: 0 0 18px 18px !important;
+  border: 1px solid rgba(21,17,28,.10) !important;
+  border-top: 0 !important;
+  background: rgba(245,239,253,.98) !important;
+  color: rgba(54, 28, 74, .82) !important;
+  box-shadow: 0 14px 26px rgba(0,0,0,.24) !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 10px !important;
+  right: 10px !important;
+  top: 50% !important;
+  height: 2px !important;
+  transform: translateY(-50%) !important;
+  background-image: linear-gradient(90deg, rgba(54,28,74,.55) 0 7px, transparent 7px 13px) !important;
+  background-size: 13px 2px !important;
+}
+
+.signup-phase-ticket .printed-document__tear-pulse {
+  position: absolute !important;
+  left: 10px !important;
+  top: 50% !important;
+  width: var(--tear-progress) !important;
+  height: 4px !important;
+  transform: translateY(-50%) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #8d37ff, #f35ccf) !important;
+  box-shadow: 0 0 18px rgba(199,76,255,.42) !important;
+}
+
+.signup-phase-ticket .printed-document__tear-copy {
+  position: relative !important;
+  z-index: 2 !important;
+  padding: 0 8px !important;
+  background: rgba(245,239,253,.92) !important;
+  color: rgba(64, 28, 92, .82) !important;
+  font-size: 10px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.signup-phase-ticket .printed-document__pass {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  overflow: visible !important;
+  background: transparent !important;
+  z-index: 2 !important;
+  transition: transform .16s ease, opacity .18s ease, filter .18s ease !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing .printed-document__pass {
+  transform: translateX(calc(var(--tear-progress) * .68)) translateY(var(--tear-drop, 0px)) rotate(var(--tear-rotation, 0deg)) !important;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,.34)) !important;
+}
+
+.signup-phase-ticket .printed-document.is-torn .printed-document__pass {
+  transform: translateX(76px) translateY(22px) rotate(4deg) !important;
+  opacity: 0 !important;
+}
+
+.signup-phase-ticket .printed-document__ripped-edge {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: 14px !important;
+  right: 14px !important;
+  top: -1px !important;
+  height: 8px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,.95) 0 25%, transparent 25% 50%, rgba(255,255,255,.95) 50% 75%, transparent 75%) !important;
+  background-size: 14px 8px !important;
+  opacity: .86 !important;
+  pointer-events: none !important;
+}
+
+.signup-phase-ticket .printed-document__pass .one-boarding-pass,
+.signup-phase-ticket .printed-document__pass .one-boarding-pass[aria-label] {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  height: var(--print-pass-h) !important;
+  min-height: 500px !important;
+  max-height: 640px !important;
+  aspect-ratio: auto !important;
+  display: grid !important;
+  grid-template-rows: 74px minmax(0, 1fr) 42px !important;
+  transform: none !important;
+  transform-origin: center !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 22px !important;
+  box-shadow: 0 24px 68px rgba(0,0,0,.46) !important;
+}
+
+.signup-phase-ticket .one-pass-header {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: center !important;
+  justify-content: stretch !important;
+  gap: 4px !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+}
+
+.signup-phase-ticket .one-pass-header > div {
+  min-width: 0 !important;
+}
+
+.signup-phase-ticket .one-pass-header strong {
+  font-size: 18px !important;
+  line-height: .92 !important;
+  white-space: normal !important;
+}
+
+.signup-phase-ticket .one-pass-header span {
+  font-size: 7px !important;
+  line-height: 1.1 !important;
+  white-space: normal !important;
+}
+
+.signup-phase-ticket .one-pass-body {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 68px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "barcode passenger"
+    "barcode route"
+    "barcode fields"
+    "stub stub" !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  gap: 8px !important;
+  align-items: start !important;
+  padding: 12px !important;
+}
+
+.signup-phase-ticket .one-pass-barcode {
+  grid-area: barcode !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+  height: 100% !important;
+  border-radius: 7px !important;
+  background: repeating-linear-gradient(90deg, #050506 0 4px, transparent 4px 7px, #050506 7px 11px, transparent 11px 15px) !important;
+}
+
+.signup-phase-ticket .one-pass-passenger {
+  grid-area: passenger !important;
+  min-width: 0 !important;
+}
+
+.signup-phase-ticket .one-pass-passenger strong {
+  font-size: 18px !important;
+  line-height: .95 !important;
+  white-space: nowrap !important;
+}
+
+.signup-phase-ticket .one-pass-passenger small,
+.signup-phase-ticket .one-pass-stub small {
+  font-size: 7px !important;
+  white-space: normal !important;
+}
+
+.signup-phase-ticket .one-pass-route {
+  grid-area: route !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+}
+
+.signup-phase-ticket .one-pass-fields {
+  grid-area: fields !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-content: start !important;
+  gap: 6px !important;
+}
+
+.signup-phase-ticket .one-pass-route div,
+.signup-phase-ticket .one-pass-fields span {
+  min-width: 0 !important;
+  padding: 6px !important;
+  border-radius: 8px !important;
+}
+
+.signup-phase-ticket .one-pass-route strong,
+.signup-phase-ticket .one-pass-fields strong,
+.signup-phase-ticket .one-pass-stub strong {
+  font-size: 11px !important;
+  line-height: 1.05 !important;
+}
+
+.signup-phase-ticket .one-pass-passenger span,
+.signup-phase-ticket .one-pass-route span,
+.signup-phase-ticket .one-pass-fields small,
+.signup-phase-ticket .one-pass-stub span {
+  font-size: 7px !important;
+  letter-spacing: .075em !important;
+}
+
+.signup-phase-ticket .one-pass-stub {
+  grid-area: stub !important;
+  align-self: end !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-items: start !important;
+  gap: 6px 10px !important;
+  padding: 9px 0 0 !important;
+  border-left: 0 !important;
+  border-top: 2px dotted rgba(21,17,28,.20) !important;
+  text-align: left !important;
+}
+
+.signup-phase-ticket .one-pass-stub strong {
+  font-size: 18px !important;
+}
+
+.signup-phase-ticket .one-pass-stub span {
+  justify-self: end !important;
+}
+
+.signup-phase-ticket .one-pass-stub small {
+  grid-column: 1 / -1 !important;
+}
+
+.signup-phase-ticket .one-pass-footer {
+  min-height: 42px !important;
+  padding: 8px 12px !important;
+  font-size: 8px !important;
+  line-height: 1.15 !important;
+}
+
+@keyframes repairTicketFeedDown {
+  from { opacity: 0; transform: translateY(-34px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.boarding-pass-action-row {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.boarding-pass-share-panel .share-boarding-pass-cta,
+.boarding-pass-share-panel .print-boarding-pass-cta {
+  width: 100% !important;
+  min-height: 48px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(228, 78, 238, .54) !important;
+  background: rgba(228, 78, 238, .10) !important;
+  color: #fff !important;
+  box-shadow: 0 0 26px rgba(193, 52, 234, .16) !important;
+}
+
+.boarding-pass-share-panel .print-boarding-pass-cta {
+  border-color: rgba(255,255,255,.16) !important;
+  background: rgba(255,255,255,.055) !important;
+}
+
+@media (max-width: 520px) {
+  .signup-phase-ticket .base6-ticket-stage {
+    --print-pass-w: min(276px, calc(100vw - 44px));
+    --print-pass-h: min(560px, calc(100svh - 210px));
+    gap: 8px !important;
+  }
+
+  .signup-phase-ticket .printer-slot {
+    width: calc(100vw - 22px) !important;
+    height: 88px !important;
+    margin-bottom: -12px !important;
+  }
+
+  .signup-phase-ticket .printed-document__tear-copy {
+    font-size: 9px !important;
+    letter-spacing: .09em !important;
+  }
+
+  .signup-phase-ticket .printed-document__pass .one-boarding-pass,
+  .signup-phase-ticket .printed-document__pass .one-boarding-pass[aria-label] {
+    min-height: 484px !important;
+    grid-template-rows: 68px minmax(0, 1fr) 38px !important;
+    border-radius: 20px !important;
+  }
+
+  .signup-phase-ticket .one-pass-header {
+    padding: 10px 12px !important;
+  }
+
+  .signup-phase-ticket .one-pass-header strong {
+    font-size: 16px !important;
+  }
+
+  .signup-phase-ticket .one-pass-body {
+    grid-template-columns: 58px minmax(0, 1fr) !important;
+    gap: 6px !important;
+    padding: 10px !important;
+  }
+
+  .signup-phase-ticket .one-pass-passenger strong {
+    font-size: 16px !important;
+  }
+
+  .signup-phase-ticket .one-pass-route div,
+  .signup-phase-ticket .one-pass-fields span {
+    padding: 5px !important;
+  }
+
+  .signup-phase-ticket .one-pass-route strong,
+  .signup-phase-ticket .one-pass-fields strong,
+  .signup-phase-ticket .one-pass-stub strong {
+    font-size: 10px !important;
+  }
+
+  .boarding-pass-action-row {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Ticket print orientation repair: the printer feeds a portrait strip, but the actual boarding pass remains the same landscape pass rotated 90deg. */
+.signup-phase-ticket .base6-ticket-stage {
+  --print-paper-w: min(318px, calc(100vw - 42px)) !important;
+  --print-paper-h: min(650px, calc(100svh - 196px)) !important;
+  --print-pass-scale: .9 !important;
+  justify-content: start !important;
+  align-content: start !important;
+  place-items: start center !important;
+  gap: 10px !important;
+  padding-top: 18px !important;
+  overflow: hidden !important;
+}
+
+.signup-phase-ticket .printer-slot {
+  width: min(492px, calc(100vw - 32px)) !important;
+  height: 92px !important;
+  margin: 0 0 -24px !important;
+  border-radius: 16px 16px 30px 30px !important;
+  z-index: 5 !important;
+}
+
+.signup-phase-ticket .printed-document {
+  position: relative !important;
+  width: var(--print-paper-w) !important;
+  height: var(--print-paper-h) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  display: block !important;
+  overflow: hidden !important;
+  border-radius: 0 0 28px 28px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(244,239,250,.98)) !important;
+  box-shadow:
+    0 34px 82px rgba(0,0,0,.58),
+    0 0 0 1px rgba(255,255,255,.08) !important;
+  animation: repairTicketFeedDown .92s cubic-bezier(.16, 1, .3, 1) both !important;
+  touch-action: pan-y !important;
+}
+
+.signup-phase-ticket .printed-document__fixed-feed {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  width: 100% !important;
+  height: 74px !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background: linear-gradient(180deg, rgba(15,10,24,.05), rgba(15,10,24,0)) !important;
+}
+
+.signup-phase-ticket .printed-document__tear {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 76px !important;
+  height: 36px !important;
+  z-index: 4 !important;
+  display: grid !important;
+  place-items: center !important;
+  pointer-events: none !important;
+  border-top: 2px dashed rgba(21,17,28,.22) !important;
+  border-bottom: 0 !important;
+  background: rgba(255,255,255,.56) !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before,
+.signup-phase-ticket .printed-document__tear::after {
+  display: none !important;
+}
+
+.signup-phase-ticket .printed-document__tear-pulse {
+  position: absolute !important;
+  left: 22px !important;
+  right: 22px !important;
+  top: 8px !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(116,39,217,.20), rgba(204,72,240,.84), rgba(243,92,207,.20)) !important;
+  box-shadow: 0 0 20px rgba(204,72,240,.42) !important;
+}
+
+.signup-phase-ticket .printed-document__tear-copy {
+  position: relative !important;
+  z-index: 2 !important;
+  color: rgba(45,22,70,.82) !important;
+  font-size: 10px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .11em !important;
+  text-transform: uppercase !important;
+}
+
+.signup-phase-ticket .printed-document__pass {
+  position: absolute !important;
+  left: 50% !important;
+  top: calc(50% + 28px) !important;
+  width: 640px !important;
+  height: 278px !important;
+  display: block !important;
+  overflow: visible !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(var(--print-pass-scale)) !important;
+  transform-origin: center !important;
+  z-index: 2 !important;
+  transition: transform .16s linear, opacity .16s linear !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing .printed-document__pass {
+  transform: translate(calc(-50% + var(--tear-progress) * .16), calc(-50% + var(--tear-drop, 0px))) rotate(calc(90deg + var(--tear-rotation, 0deg))) scale(var(--print-pass-scale)) !important;
+}
+
+.signup-phase-ticket .printed-document.is-torn .printed-document__pass {
+  transform: translate(calc(-50% + 72px), calc(-50% + 22px)) rotate(94deg) scale(var(--print-pass-scale)) !important;
+  opacity: 0 !important;
+}
+
+.signup-phase-ticket .printed-document__ripped-edge {
+  position: absolute !important;
+  z-index: 4 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: -4px !important;
+  height: 8px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,.96) 0 25%, transparent 25% 50%, rgba(255,255,255,.96) 50% 75%, transparent 75%) !important;
+  background-size: 14px 8px !important;
+  pointer-events: none !important;
+}
+
+.signup-phase-ticket .printed-document__pass .one-boarding-pass,
+.signup-phase-ticket .printed-document__pass .one-boarding-pass[aria-label] {
+  position: relative !important;
+  inset: auto !important;
+  width: 640px !important;
+  height: 278px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  display: grid !important;
+  grid-template-rows: 60px minmax(0, 1fr) 38px !important;
+  transform: none !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 22px !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.30) !important;
+}
+
+.signup-phase-ticket .one-pass-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 13px 18px !important;
+  text-align: left !important;
+}
+
+.signup-phase-ticket .one-pass-header > div {
+  min-width: 0 !important;
+}
+
+.signup-phase-ticket .one-pass-header strong {
+  font-size: 22px !important;
+  line-height: .9 !important;
+  white-space: nowrap !important;
+}
+
+.signup-phase-ticket .one-pass-header span {
+  margin-top: 3px !important;
+  font-size: 8px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+}
+
+.signup-phase-ticket .one-pass-body {
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-columns: 104px minmax(0, 1fr) 112px !important;
+  grid-template-areas:
+    "barcode passenger stub"
+    "barcode route stub"
+    "barcode fields stub" !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  gap: 9px 13px !important;
+  align-items: start !important;
+  padding: 13px 15px !important;
+}
+
+.signup-phase-ticket .one-pass-barcode {
+  grid-area: barcode !important;
+  align-self: stretch !important;
+  min-height: 106px !important;
+  height: auto !important;
+  border-radius: 8px !important;
+  background: repeating-linear-gradient(90deg, #050506 0 4px, transparent 4px 7px, #050506 7px 11px, transparent 11px 15px) !important;
+}
+
+.signup-phase-ticket .one-pass-passenger {
+  grid-area: passenger !important;
+}
+
+.signup-phase-ticket .one-pass-passenger strong {
+  font-size: 20px !important;
+  line-height: .95 !important;
+  white-space: nowrap !important;
+}
+
+.signup-phase-ticket .one-pass-passenger small,
+.signup-phase-ticket .one-pass-stub small {
+  font-size: 9px !important;
+  white-space: nowrap !important;
+}
+
+.signup-phase-ticket .one-pass-route {
+  grid-area: route !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+
+.signup-phase-ticket .one-pass-fields {
+  grid-area: fields !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-content: start !important;
+  gap: 7px !important;
+}
+
+.signup-phase-ticket .one-pass-route div,
+.signup-phase-ticket .one-pass-fields span {
+  min-width: 0 !important;
+  padding: 7px !important;
+  border-radius: 8px !important;
+}
+
+.signup-phase-ticket .one-pass-route strong,
+.signup-phase-ticket .one-pass-fields strong,
+.signup-phase-ticket .one-pass-stub strong {
+  font-size: 12px !important;
+  line-height: 1.02 !important;
+}
+
+.signup-phase-ticket .one-pass-passenger span,
+.signup-phase-ticket .one-pass-route span,
+.signup-phase-ticket .one-pass-fields small,
+.signup-phase-ticket .one-pass-stub span {
+  font-size: 8px !important;
+  letter-spacing: .09em !important;
+}
+
+.signup-phase-ticket .one-pass-stub {
+  grid-area: stub !important;
+  align-self: stretch !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 6px !important;
+  padding: 10px !important;
+  border-left: 2px dotted rgba(21,17,28,.20) !important;
+  border-top: 0 !important;
+  text-align: center !important;
+}
+
+.signup-phase-ticket .one-pass-stub strong {
+  font-size: 20px !important;
+}
+
+.signup-phase-ticket .one-pass-stub span {
+  justify-self: center !important;
+}
+
+.signup-phase-ticket .one-pass-stub small {
+  grid-column: auto !important;
+}
+
+.signup-phase-ticket .one-pass-footer {
+  min-height: 38px !important;
+  padding: 10px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  text-align: center !important;
+}
+
+@media (max-width: 520px) {
+  .signup-phase-ticket .base6-ticket-stage {
+    --print-paper-w: min(292px, calc(100vw - 46px)) !important;
+    --print-paper-h: min(604px, calc(100svh - 200px)) !important;
+    --print-pass-scale: .84 !important;
+    gap: 8px !important;
+  }
+
+  .signup-phase-ticket .printer-slot {
+    width: calc(100vw - 24px) !important;
+    height: 86px !important;
+  }
+
+  .signup-phase-ticket .printed-document__pass {
+    top: calc(50% + 28px) !important;
+  }
+}
+
+/* Ticket print restore: same horizontal boarding pass, rotated inside a narrow vertical printer feed. */
+.signup-phase-ticket .base6-ticket-stage {
+  --print-scene-w: min(390px, calc(100vw - 22px)) !important;
+  --printer-h: clamp(76px, 12svh, 98px) !important;
+  display: grid !important;
+  grid-template-rows: var(--printer-h) auto auto !important;
+  justify-items: center !important;
+  align-content: start !important;
+  place-items: start center !important;
+  gap: 0 !important;
+  padding: max(14px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom)) !important;
+  overflow: hidden !important;
+}
+
+.signup-phase-ticket .printer-slot {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: var(--print-scene-w) !important;
+  height: var(--printer-h) !important;
+  margin: 0 !important;
+  transform: none !important;
+  z-index: 30 !important;
+  border-radius: 14px 14px 30px 30px !important;
+}
+
+.signup-phase-ticket .printed-document {
+  --rotated-pass-w: 164px !important;
+  --rotated-pass-h: 378px !important;
+  position: relative !important;
+  z-index: 20 !important;
+  width: calc(var(--rotated-pass-w) + 24px) !important;
+  height: calc(var(--rotated-pass-h) + 62px) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: -1px auto 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-rows: 26px 36px minmax(0, 1fr) !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 0 24px 24px !important;
+  background:
+    linear-gradient(180deg, rgba(250,248,255,.98), rgba(236,231,244,.98)) !important;
+  box-shadow: 0 36px 84px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.10) !important;
+  cursor: grab !important;
+  touch-action: none !important;
+  transform: none !important;
+  animation: physicalPaperPrint 2.65s cubic-bezier(.14,.78,.16,1) both !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing,
+.signup-phase-ticket .printed-document.is-torn {
+  animation: none !important;
+  transform: none !important;
+  cursor: grabbing !important;
+}
+
+.signup-phase-ticket .printed-document__fixed-feed {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 6 !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: 26px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 0 !important;
+  background:
+    repeating-linear-gradient(90deg, rgba(21,17,28,.08) 0 1px, transparent 1px 9px),
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(235,229,243,.96)) !important;
+  border-bottom: 1px solid rgba(21,17,28,.12) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,.16) !important;
+  pointer-events: none !important;
+}
+
+.signup-phase-ticket .printed-document__feed-label {
+  display: block !important;
+  color: rgba(21,17,28,.46) !important;
+  font-size: 8px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .18em !important;
+  text-transform: uppercase !important;
+}
+
+.signup-phase-ticket .printed-document__tear {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 8 !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 0 16px 16px !important;
+  background:
+    linear-gradient(90deg, rgba(21,17,28,.42) 0 8px, transparent 8px 15px) center / 15px 2px no-repeat,
+    rgba(250,248,255,.96) !important;
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.20),
+    inset 0 -1px 0 rgba(21,17,28,.16) !important;
+  pointer-events: none !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before,
+.signup-phase-ticket .printed-document__tear::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  bottom: -8px !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 999px !important;
+  background: #07050a !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.signup-phase-ticket .printed-document__tear::before { left: -8px !important; }
+.signup-phase-ticket .printed-document__tear::after { right: -8px !important; }
+
+.signup-phase-ticket .printed-document__tear-pulse {
+  position: absolute !important;
+  left: 12px !important;
+  right: auto !important;
+  top: 50% !important;
+  width: var(--tear-progress) !important;
+  max-width: calc(100% - 24px) !important;
+  height: 4px !important;
+  transform: translateY(-50%) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #8d37ff, #f35ccf) !important;
+  box-shadow: 0 0 18px rgba(199,76,255,.42) !important;
+}
+
+.signup-phase-ticket .printed-document__tear-copy {
+  position: relative !important;
+  z-index: 2 !important;
+  padding: 0 6px !important;
+  transform: translateY(-1px) !important;
+  background: rgba(250,248,255,.92) !important;
+  color: rgba(64,28,92,.82) !important;
+  font-size: 10px !important;
+  font-weight: 1000 !important;
+  letter-spacing: .11em !important;
+  text-transform: uppercase !important;
+}
+
+.signup-phase-ticket .printed-document__pass {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  z-index: 4 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  transform: none !important;
+  transform-origin: 50% 0 !important;
+  transition: transform .18s cubic-bezier(.18,.8,.18,1), filter .18s ease, opacity .18s ease !important;
+  will-change: transform !important;
+}
+
+.signup-phase-ticket .printed-document.is-tearing .printed-document__pass {
+  transform: translateX(calc(min(var(--tear-progress), 100%) * .7)) translateY(var(--tear-drop, 0px)) rotate(var(--tear-rotation, 0deg)) !important;
+  transition: none !important;
+  filter: drop-shadow(-10px 20px 24px rgba(0,0,0,.26)) !important;
+}
+
+.signup-phase-ticket .printed-document.is-torn .printed-document__pass {
+  transform: translateX(92vw) translateY(18px) rotate(5deg) !important;
+  opacity: .98 !important;
+  filter: drop-shadow(-18px 28px 34px rgba(0,0,0,.30)) !important;
+  transition: transform .36s cubic-bezier(.2,.82,.2,1), opacity .36s ease !important;
+}
+
+.signup-phase-ticket .printed-document__ripped-edge {
+  position: absolute !important;
+  left: 50% !important;
+  top: -7px !important;
+  z-index: 6 !important;
+  width: calc(var(--rotated-pass-w) + 4px) !important;
+  height: 16px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  opacity: .92 !important;
+  background:
+    linear-gradient(135deg, transparent 0 8px, rgba(250,248,255,.98) 8px 15px, transparent 15px 22px) 0 0 / 22px 16px repeat-x !important;
+  filter: drop-shadow(0 -1px 0 rgba(21,17,28,.20)) !important;
+}
+
+.signup-phase-ticket .printed-document__pass .one-boarding-pass,
+.signup-phase-ticket .printed-document__pass .one-boarding-pass[aria-label] {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 640px !important;
+  height: 278px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  display: grid !important;
+  grid-template-rows: 60px minmax(0, 1fr) 38px !important;
+  transform: translate(-50%, -50%) rotate(90deg) scale(.59) !important;
+  transform-origin: center !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 520px) {
+  .signup-phase-ticket .printed-document {
+    --rotated-pass-w: 164px !important;
+    --rotated-pass-h: min(378px, calc(100svh - var(--printer-h) - 118px)) !important;
+  }
+
+  .signup-phase-ticket .printed-document__pass .one-boarding-pass,
+  .signup-phase-ticket .printed-document__pass .one-boarding-pass[aria-label] {
+    transform: translate(-50%, -50%) rotate(90deg) scale(.58) !important;
+  }
+}

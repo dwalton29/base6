@@ -1,0 +1,335 @@
+/* BASE6 passport stamp award overlay */
+.passport-stamp-award-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(207, 82, 255, .2), transparent 34%),
+    rgba(10, 9, 15, .82);
+  backdrop-filter: blur(18px);
+}
+
+.passport-stamp-award-card {
+  width: min(620px, 100%);
+  max-height: calc(100dvh - 36px);
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  text-align: center;
+}
+
+.passport-stamp-award-copy {
+  display: grid;
+  gap: 8px;
+  max-width: 460px;
+}
+
+.passport-stamp-award-copy h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(34px, 9vw, 74px);
+  line-height: .86;
+  letter-spacing: -.07em;
+}
+
+.passport-stamp-award-copy p {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.passport-stamp-award-book {
+  position: relative;
+  width: min(520px, 94vw);
+  aspect-ratio: 1.52;
+  perspective: 1200px;
+}
+
+.passport-stamp-award-cover,
+.passport-stamp-award-pages {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+}
+
+.passport-stamp-award-cover {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: 28px;
+  color: #f9efff;
+  background:
+    radial-gradient(circle at 32% 22%, rgba(255,255,255,.14), transparent 28%),
+    linear-gradient(135deg, #251133, #7d24dd 48%, #f255c6);
+  border: 1px solid rgba(255,255,255,.2);
+  box-shadow: 0 28px 70px rgba(0,0,0,.48);
+  transform-origin: left center;
+  transition: transform .72s cubic-bezier(.2,.78,.16,1), opacity .28s ease;
+}
+
+.passport-stamp-award-cover span,
+.passport-stamp-award-cover small {
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.68);
+}
+
+.passport-stamp-award-cover strong {
+  font-size: clamp(48px, 12vw, 86px);
+  line-height: .82;
+  letter-spacing: -.07em;
+  text-transform: uppercase;
+}
+
+.passport-stamp-award-pages {
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  background: #fbf6ff;
+  color: #1a1222;
+  box-shadow: 0 28px 80px rgba(0,0,0,.42);
+  transform: scale(.96) translateY(12px);
+  opacity: .25;
+  transition: transform .68s cubic-bezier(.2,.78,.16,1), opacity .48s ease;
+}
+
+.passport-stamp-award-page {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 28px;
+  background:
+    repeating-linear-gradient(115deg, rgba(124, 36, 221, .055) 0 2px, transparent 2px 12px),
+    linear-gradient(180deg, rgba(255,255,255,.95), rgba(245,235,255,.95));
+}
+
+.passport-stamp-award-page.left {
+  border-right: 1px solid rgba(36,27,43,.12);
+  box-shadow: inset -14px 0 28px rgba(36,27,43,.06);
+}
+
+.passport-stamp-award-page.right {
+  box-shadow: inset 14px 0 28px rgba(36,27,43,.06);
+}
+
+.passport-stamp-award-page-label {
+  color: rgba(36,27,43,.48);
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.passport-stamp-award-empty-slot {
+  min-height: 112px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(36,27,43,.22);
+  border-radius: 22px;
+  color: rgba(36,27,43,.38);
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.passport-stamp-award-imprint {
+  width: min(205px, 100%);
+  aspect-ratio: 1;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  border: 8px double rgba(106, 31, 190, .78);
+  border-radius: 999px;
+  color: rgba(106, 31, 190, .82);
+  transform: rotate(-8deg) scale(1.35);
+  opacity: 0;
+  filter: blur(1px);
+  transition: transform .22s ease, opacity .22s ease, filter .22s ease;
+}
+
+.passport-stamp-award-imprint span {
+  font-size: 28px;
+}
+
+.passport-stamp-award-imprint strong {
+  max-width: 135px;
+  font-size: 21px;
+  line-height: .9;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+}
+
+.passport-stamp-award-imprint small {
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.passport-stamp-award-press {
+  position: absolute;
+  top: -74px;
+  left: 50%;
+  width: 168px;
+  height: 168px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #f9efff;
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255,255,255,.22), transparent 30%),
+    linear-gradient(135deg, #22122d, #6f1fc8 55%, #e94ac2);
+  box-shadow: 0 18px 38px rgba(0,0,0,.32);
+  transform: translateX(-50%) translateY(-70px) rotate(-8deg);
+  opacity: 0;
+}
+
+.passport-stamp-award-press span {
+  font-size: 18px;
+  font-weight: 1000;
+  letter-spacing: .16em;
+}
+
+.stage-opening .passport-stamp-award-cover,
+.stage-stamping .passport-stamp-award-cover,
+.stage-stamped .passport-stamp-award-cover {
+  transform: rotateY(-104deg) translateX(-8px);
+  opacity: 0;
+}
+
+.stage-opening .passport-stamp-award-pages,
+.stage-stamping .passport-stamp-award-pages,
+.stage-stamped .passport-stamp-award-pages {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.stage-stamping .passport-stamp-award-press {
+  animation: base6StampPress .72s cubic-bezier(.15,.75,.15,1) both;
+}
+
+.stage-stamped .passport-stamp-award-imprint,
+.stage-stamping .passport-stamp-award-imprint {
+  opacity: 1;
+  transform: rotate(-8deg) scale(1);
+  filter: blur(0);
+}
+
+.passport-stamp-award-button {
+  min-width: 220px;
+  opacity: .82;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.stage-stamped .passport-stamp-award-button {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+@keyframes base6StampPress {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-80px) rotate(-8deg) scale(1.08); }
+  34% { opacity: 1; transform: translateX(-50%) translateY(46px) rotate(-8deg) scale(.94); }
+  52% { opacity: 1; transform: translateX(-50%) translateY(28px) rotate(-8deg) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-64px) rotate(-8deg) scale(1.04); }
+}
+
+@media (max-width: 620px) {
+  .passport-stamp-award-overlay {
+    padding: 12px;
+  }
+
+  .passport-stamp-award-card {
+    gap: 12px;
+    max-height: calc(100dvh - 24px);
+  }
+
+  .passport-stamp-award-copy h2 {
+    font-size: clamp(30px, 11vw, 46px);
+  }
+
+  .passport-stamp-award-copy p {
+    font-size: 13px;
+  }
+
+  .passport-stamp-award-book {
+    width: min(390px, 92vw);
+  }
+
+  .passport-stamp-award-cover,
+  .passport-stamp-award-pages {
+    border-radius: 22px;
+  }
+
+  .passport-stamp-award-page {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .passport-stamp-award-empty-slot {
+    min-height: 82px;
+    border-radius: 17px;
+    font-size: 9px;
+  }
+
+  .passport-stamp-award-imprint {
+    width: min(145px, 100%);
+    border-width: 6px;
+  }
+
+  .passport-stamp-award-imprint span {
+    font-size: 22px;
+  }
+
+  .passport-stamp-award-imprint strong {
+    max-width: 100px;
+    font-size: 15px;
+  }
+
+  .passport-stamp-award-imprint small,
+  .passport-stamp-award-page-label {
+    font-size: 8px;
+  }
+
+  .passport-stamp-award-press {
+    width: 124px;
+    height: 124px;
+  }
+
+  .passport-stamp-award-button {
+    width: min(320px, 92vw);
+    min-width: 0;
+  }
+}
+
+/* Phase 3 repair: stamp award is one page, one stamp. */
+.passport-stamp-award-pages.single {
+  grid-template-columns: 1fr !important;
+  padding: 18px !important;
+}
+
+.passport-stamp-award-pages.single .passport-stamp-award-page.left {
+  transform: rotate(-.8deg) !important;
+}
+
+.passport-stamp-award-pages.single .passport-stamp-award-imprint {
+  width: min(260px, 78%) !important;
+  min-height: 142px !important;
+  margin: auto !important;
+}

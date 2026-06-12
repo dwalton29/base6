@@ -10,6 +10,8 @@ export type PassportIdentityDetails = {
   business?: string;
   bio?: string | null;
   reputation?: string | number | null;
+  flight?: string | null;
+  seat?: string | null;
 };
 
 function initials(username: string) {
@@ -79,6 +81,14 @@ export function Base6PassportIdentityPage({ details }: { details: PassportIdenti
         <div>
           <dt>{details.handleLabel || "Player ID"}</dt>
           <dd>{details.handle || "Pending"}</dd>
+        </div>
+        <div>
+          <dt>Flight</dt>
+          <dd>{details.flight || "Pending"}</dd>
+        </div>
+        <div>
+          <dt>Seat</dt>
+          <dd>{details.seat || "Pending"}</dd>
         </div>
       </dl>
 
