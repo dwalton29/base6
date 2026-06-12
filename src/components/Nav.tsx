@@ -9,6 +9,7 @@ const links = [
   ["/lounge", "Lounge"],
   ["/news", "News"],
   ["/social", "Social"],
+  ["/flight", "Flight"],
   ["/passport", "Passport"],
   ["/crews", "Crews"],
   ["/sessions", "Sessions"],
@@ -33,7 +34,8 @@ type MenuItem = {
 
 const ACCOUNT_ITEMS: MenuItem[] = [
   { href: "/passport", label: "My Passport", icon: "📘" },
-  { href: "/documents", label: "Documents", icon: "🎟️" },
+  { href: "/flight", label: "My Flight", icon: "🛫" },
+  { href: "/boarding-pass", label: "Boarding Pass", icon: "🎟️" },
   { href: "/reputation", label: "Reputation", icon: "⭐" },
   { href: "/crews", label: "My Crew", icon: "👥" },
 ];
@@ -292,8 +294,8 @@ export default function Nav() {
           </button>
           <Link className="base6-mobile-tab" href="/lounge"><span aria-hidden="true">🛫</span><span>Home</span></Link>
           <Link className="base6-mobile-tab" href="/social"><span aria-hidden="true">💬</span><span>Social</span></Link>
+          <Link className="base6-mobile-tab" href="/flight"><span aria-hidden="true">🛫</span><span>Flight</span></Link>
           <Link className="base6-mobile-tab" href="/passport"><span aria-hidden="true">📘</span><span>Passport</span></Link>
-          <Link className="base6-mobile-tab" href="/sessions"><span aria-hidden="true">📍</span><span>LFG</span></Link>
         </nav>
       </div>
 

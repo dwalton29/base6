@@ -14,8 +14,30 @@ import {
 } from "@/lib/passport";
 import { supabase, hasSupabaseEnv } from "@/lib/supabase";
 
+type PassportProfileWithId = PassportProfile & { id: string };
+
+const PASSPORT_SELECT = "id, username, passport_number, platform, platform_handle, avatar_url, crime_history, san_andreas_since_year, business_type, business_custom_text, bio, reputation_score, created_at";
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+async function findPublicPassport(handle: string) {
+  const cleanHandle = decodeURIComponent(handle).trim();
+  if (!cleanHandle || !supabase) return { data: null, error: null };
+
+  if (isUuid(cleanHandle)) {
+    return supabase.from("profiles").select(PASSPORT_SELECT).eq("id", cleanHandle).maybeSingle();
+  }
+
+  const byUsername = await supabase.from("profiles").select(PASSPORT_SELECT).eq("username", cleanHandle).maybeSingle();
+  if (byUsername.data || byUsername.error) return byUsername;
+
+  return supabase.from("profiles").select(PASSPORT_SELECT).eq("passport_number", cleanHandle).maybeSingle();
+}
+
 export default function PassportPage() {
-  const [profile, setProfile] = useState<PassportProfile | null>(null);
+  const [profile, setProfile] = useState<PassportProfileWithId | null>(null);
   const [stamps, setStamps] = useState<PassportStamp[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
@@ -23,6 +45,7 @@ export default function PassportPage() {
   const [hasOpened, setHasOpened] = useState(false);
   const [turnDirection, setTurnDirection] = useState<"next" | "previous" | null>(null);
   const [isTurning, setIsTurning] = useState(false);
+  const [isPublicView, setIsPublicView] = useState(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setHasOpened(true), 550);
@@ -37,19 +60,33 @@ export default function PassportPage() {
         return;
       }
 
-      const { data: userData } = await supabase.auth.getUser();
-      const user = userData.user;
-      if (!user) {
-        setMessage("No passport signed in yet.");
-        setIsLoading(false);
-        return;
-      }
+      const requestedHandle = new URLSearchParams(window.location.search).get("user")?.trim() || "";
+      setIsPublicView(Boolean(requestedHandle));
 
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("username, passport_number, platform, platform_handle, avatar_url, crime_history, san_andreas_since_year, business_type, business_custom_text, bio, reputation_score, created_at")
-        .eq("id", user.id)
-        .single();
+      let profileData: any = null;
+      let profileError: { message: string } | null = null;
+
+      if (requestedHandle) {
+        const response = await findPublicPassport(requestedHandle);
+        profileData = response.data;
+        profileError = response.error as { message: string } | null;
+      } else {
+        const { data: userData } = await supabase.auth.getUser();
+        const user = userData.user;
+        if (!user) {
+          setMessage("No passport signed in yet.");
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await supabase
+          .from("profiles")
+          .select(PASSPORT_SELECT)
+          .eq("id", user.id)
+          .single();
+        profileData = response.data;
+        profileError = response.error as { message: string } | null;
+      }
 
       if (profileError) {
         setMessage(profileError.message);
@@ -57,12 +94,18 @@ export default function PassportPage() {
         return;
       }
 
-      setProfile(profileData as PassportProfile);
+      if (!profileData) {
+        setMessage(requestedHandle ? "Passport not found." : "No passport found for this account yet.");
+        setIsLoading(false);
+        return;
+      }
+
+      setProfile(profileData as PassportProfileWithId);
 
       const { data: stampData } = await supabase
         .from("user_passport_stamps")
         .select("granted_at, passport_stamps(name, description, icon, code)")
-        .eq("user_id", user.id)
+        .eq("user_id", profileData.id)
         .order("granted_at", { ascending: true });
 
       const parsedStamps = parsePassportStampRows(stampData as PassportStampRow[] | null);
@@ -110,19 +153,26 @@ export default function PassportPage() {
       )}
 
       {!isLoading && profile && identityDetails && (
-        <PassportBook
-          passportNumber={profile.passport_number}
-          identityDetails={identityDetails}
-          stampPages={stampPages}
-          pageIndex={pageIndex}
-          totalPages={totalPages}
-          hasOpened={hasOpened}
-          isTurning={isTurning}
-          turnDirection={turnDirection}
-          onPrevious={() => turnPage("previous")}
-          onNext={() => turnPage("next")}
-          onOpenPage={setPageIndex}
-        />
+        <>
+          {isPublicView ? (
+            <div className="public-passport-return">
+              <Link className="button" href="/flight">← Back to flight</Link>
+            </div>
+          ) : null}
+          <PassportBook
+            passportNumber={profile.passport_number}
+            identityDetails={identityDetails}
+            stampPages={stampPages}
+            pageIndex={pageIndex}
+            totalPages={totalPages}
+            hasOpened={hasOpened}
+            isTurning={isTurning}
+            turnDirection={turnDirection}
+            onPrevious={() => turnPage("previous")}
+            onNext={() => turnPage("next")}
+            onOpenPage={setPageIndex}
+          />
+        </>
       )}
     </div>
   );

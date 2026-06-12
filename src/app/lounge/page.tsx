@@ -29,6 +29,7 @@ type LoungeState = {
   userProfile: Profile | null;
   stamps: string[];
   recentArrivals: Profile[];
+  flightPassengers: Profile[];
   liveCrews: CrewRow[];
   liveSessions: SessionRow[];
   livePosts: PostRow[];
@@ -39,6 +40,7 @@ const emptyState: LoungeState = {
   userProfile: null,
   stamps: [],
   recentArrivals: [],
+  flightPassengers: [],
   liveCrews: [],
   liveSessions: [],
   livePosts: [],
@@ -107,6 +109,7 @@ export default function LoungePage() {
 
         let userProfile: Profile | null = null;
         let stamps: string[] = [];
+        let flightPassengers: Profile[] = [];
 
         if (user) {
           const { data: profileData } = await supabase
@@ -123,12 +126,23 @@ export default function LoungePage() {
             .eq("user_id", user.id);
 
           stamps = ((stampData as StampJoin[] | null) || []).map((row) => `${row.passport_stamps?.icon || "✦"} ${row.passport_stamps?.name || "Stamp"}`);
+
+          if (userProfile?.boarding_flight) {
+            const { data: flightRows } = await supabase
+              .from("profiles")
+              .select("id, username, passport_number, platform, platform_handle, avatar_url, business_type, business_custom_text, reputation_score, boarding_flight, boarding_seat, created_at")
+              .eq("boarding_flight", userProfile.boarding_flight)
+              .order("boarding_sequence", { ascending: true })
+              .limit(8);
+            flightPassengers = (flightRows as Profile[] | null) || [];
+          }
         }
 
         setState({
           userProfile,
           stamps,
           recentArrivals: (profilesRes.data as Profile[] | null) || [],
+          flightPassengers,
           liveCrews: (crewsRes.data as CrewRow[] | null) || [],
           liveSessions: (sessionsRes.data as SessionRow[] | null) || [],
           livePosts: (postsRes.data as PostRow[] | null) || [],
@@ -154,11 +168,11 @@ export default function LoungePage() {
 
   const loungeCards = useMemo(() => [
     {
-      eyebrow: "Flight B6-1119",
+      eyebrow: "Leonida countdown",
       title: `${releaseCountdown.days} days`,
       body: "Claim your passport, find your crew and wait in the lounge before the gates open.",
-      href: "/events",
-      cta: "View flight board",
+      href: state.userProfile ? "/flight" : "/events",
+      cta: state.userProfile ? "See your Flight" : "View flight board",
     },
     {
       eyebrow: "Live arrivals",
@@ -181,7 +195,7 @@ export default function LoungePage() {
       href: "/sessions",
       cta: "Find sessions",
     },
-  ], [state.counts, state.recentArrivals.length, releaseCountdown.days]);
+  ], [state.counts, state.recentArrivals.length, state.userProfile, releaseCountdown.days]);
 
   return (
     <div className="page stack home-page">
@@ -191,7 +205,6 @@ export default function LoungePage() {
         <div className="departure-topline">
           <div>
             <span className="eyebrow">Departure board</span>
-            <h2 className="departure-title">Flight B6-1119 · Destination Leonida</h2>
           </div>
         </div>
 
@@ -224,25 +237,15 @@ export default function LoungePage() {
             <span>Passport Control</span>
             <span>Boarding soon</span>
           </div>
-          <div className="flight-board-row">
-            <span>B6-CREW</span>
-            <span>Crew Terminal</span>
-            <span>/crews</span>
-            <span>{state.counts.crews || demoCrews.length} recruiting</span>
-          </div>
-          <div className="flight-board-row">
-            <span>B6-LFG</span>
-            <span>Session Lounge</span>
-            <span>/sessions</span>
-            <span>{state.counts.sessions || demoSessions.length} open</span>
-          </div>
+
         </div>
 
         <div className="button-row departure-actions">
-          <Link className="button primary" href={state.userProfile ? "/passport" : "/signup"}>
-            {state.userProfile ? "Show boarding pass" : "Get your passport"}
+          <Link className="button primary" href={state.userProfile ? "/boarding-pass" : "/signup"}>
+            {state.userProfile ? "See Boarding Pass" : "Get your passport"}
           </Link>
-          <Link className="button" href="/crews">Browse crews</Link>
+          <Link className="button" href={state.userProfile ? "/passport" : "/login"}>{state.userProfile ? "See Passport" : "Log in"}</Link>
+          <Link className="button" href={state.userProfile ? "/flight" : "/events"}>{state.userProfile ? "See Flight" : "View lounge"}</Link>
         </div>
       </section>
 
@@ -262,8 +265,9 @@ export default function LoungePage() {
             </p>
           </div>
           <div className="button-row">
-            <Link className="button primary" href={state.userProfile ? "/passport" : "/signup"}>{state.userProfile ? "Open your passport" : "Start passport check-in"}</Link>
-            <Link className="button" href="/sessions">Explore the lounge</Link>
+            <Link className="button primary" href={state.userProfile ? "/boarding-pass" : "/signup"}>{state.userProfile ? "See Boarding Pass" : "Start passport check-in"}</Link>
+            <Link className="button" href={state.userProfile ? "/passport" : "/sessions"}>{state.userProfile ? "See Passport" : "Explore the lounge"}</Link>
+            <Link className="button" href={state.userProfile ? "/flight" : "/events"}>{state.userProfile ? "See Flight" : "View lounge"}</Link>
           </div>
         </div>
 
@@ -289,6 +293,17 @@ export default function LoungePage() {
           <div className="passport-stamps compact-stamps">
             {displayStamps.slice(0, 4).map((stamp) => <span key={stamp} className="stamp">{stamp}</span>)}
           </div>
+          <Link className="flight-preview-card" href={state.userProfile ? "/flight" : "/signup"}>
+            <span>See your Flight</span>
+            <strong>{state.userProfile?.boarding_flight || "B6"} · {state.userProfile?.boarding_seat || "Boarding pass needed"}</strong>
+            <div className="flight-preview-avatars" aria-hidden="true">
+              {(state.flightPassengers.length ? state.flightPassengers : state.recentArrivals).slice(0, 5).map((profile) => (
+                <span key={profile.id}>
+                  {profile.avatar_url ? <img src={profile.avatar_url} alt="" /> : (profile.username || "B6").slice(0, 2).toUpperCase()}
+                </span>
+              ))}
+            </div>
+          </Link>
         </aside>
       </section>
 
